@@ -1,0 +1,24 @@
+[submodule "ViaVersion"]
+	path = ViaVersion
+	url = https://github.com/ViaVersion/ViaVersion.git
+[submodule "ViaRewind"]
+	path = ViaRewind
+	url = https://github.com/ViaVersion/ViaRewind.git
+[submodule "ViaBackwards"]
+	path = ViaBackwards
+	url = https://github.com/ViaVersion/ViaBackwards.git
+[submodule "ViaRewind-Legacy-Support"]
+	path = ViaRewind-Legacy-Support
+	url = https://github.com/ViaVersion/ViaRewind-Legacy-Support.git
+[submodule "ProtocolLib"]
+	path = ProtocolLib
+	url = https://github.com/dmulloy2/ProtocolLib.git
+[submodule "Floodgate"]
+	path = Floodgate
+	url = https://github.com/GeyserMC/Floodgate.git
+[submodule "HolographicDisplays"]
+	path = HolographicDisplays
+	url = https://github.com/filoghost/HolographicDisplays.git
+[submodule "Citizens"]
+	path = Citizens
+	url = https://github.com/CitizensDev/Citizens2.git

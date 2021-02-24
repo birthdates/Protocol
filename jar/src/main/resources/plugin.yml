@@ -1,0 +1,48 @@
+name: Protocol
+version: 1.0.0
+authors: [MCMayhem Development Team, _MylesC, creeper123123321, Gerrygames, KennyTV, Matsv, ForceUpdate1, Comphenix, GeyserMC, filoghost]
+main: org.mcmayhem.protocol.Protocol
+load: STARTUP
+api-version: 1.13
+database: false
+loadbefore: [ProtocolLib, ProxyPipe, SpigotLib, SkinRestorer]
+softdepend: [ProtocolSupport, PacketListenerApi]
+commands:
+  holograms:
+    description: Main command for HolographicDisplays.
+    usage: /<command> (Startup error)
+    aliases: [hd, holo, hologram, holograms]
+  linkaccount:
+    description: Link your Java and Bedrock accounts
+    usage: /linkaccount [code]
+    permission: floodgate.linkaccount
+    permission-message: You don't have the floodgate.linkaccount permission.
+  unlinkaccount:
+    description: Unlink your Java account from your Bedrock account
+    usage: /unlinkaccount
+    permission: floodgate.unlinkaccount
+    permission-message: You don't have the floodgate.unlinkaccount permission.
+  protocol:
+    description: Performs administrative tasks regarding ProtocolLib.
+    usage: /<command> config|check|update|timings|listeners|version|dump
+    permission: protocol.admin
+    permission-message: You don't have <permission>
+  packet:
+    description: Add or remove a simple packet listener.
+    usage: /<command> add|remove|names client|server [ID start]-[ID stop] [detailed]
+    permission: protocol.admin
+    permission-message: You don't have <permission>
+  filter:
+    description: Add or remove programmable filters to the packet listeners.
+    usage: /<command> add|remove name [ID start]-[ID stop]
+    aliases: [packet_filter]
+    permission: protocol.admin
+    permission-message: You don't have <permission>
+  packetlog:
+    description: Logs hex representations of packets to a file or console
+    usage: /<command> <protocol> <sender> <packet> [location]
+    permission: protocol.admin
+    permission-message: You don't have <permission>
+  viaversion:
+    description: Shows ViaVersion Version and more.
+    aliases: [viaver, vvbukkit]
