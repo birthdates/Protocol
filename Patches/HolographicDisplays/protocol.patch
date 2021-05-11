@@ -1,5 +1,5 @@
 diff --git a/Plugin/pom.xml b/Plugin/pom.xml
-index 24e3ddde..ae593fc5 100644
+index 24e3ddde..8990c313 100644
 --- a/Plugin/pom.xml
 +++ b/Plugin/pom.xml
 @@ -27,9 +27,20 @@
@@ -23,9 +23,12 @@ index 24e3ddde..ae593fc5 100644
  		<dependency>
  			<groupId>${project.groupId}</groupId>
  			<artifactId>holographicdisplays-api</artifactId>
-@@ -133,6 +144,7 @@
+@@ -131,8 +142,9 @@
+ 		</dependency>
+ 
  		<dependency>
- 			<groupId>com.github.dmulloy2</groupId>
+-			<groupId>com.github.dmulloy2</groupId>
++			<groupId>com.comphenix.protocol</groupId>
  			<artifactId>ProtocolLib</artifactId>
 +			<version>4.6.1-SNAPSHOT</version>
  		</dependency>
