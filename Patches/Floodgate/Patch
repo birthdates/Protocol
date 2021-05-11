@@ -1,0 +1,108 @@
+diff --git a/bukkit/pom.xml b/bukkit/pom.xml
+index 88aa979..0a0d555 100644
+--- a/bukkit/pom.xml
++++ b/bukkit/pom.xml
+@@ -23,6 +23,12 @@
+     </repositories>
+ 
+     <dependencies>
++        <dependency>
++            <groupId>com.birthdates</groupId>
++            <artifactId>protocol</artifactId>
++            <version>1.0.0</version>
++            <scope>provided</scope>
++        </dependency>
+         <dependency>
+             <groupId>org.bukkit</groupId>
+             <artifactId>bukkit</artifactId>
+diff --git a/bukkit/src/main/java/org/geysermc/floodgate/BukkitPlugin.java b/bukkit/src/main/java/org/geysermc/floodgate/BukkitPlugin.java
+index 0f13628..25937a2 100644
+--- a/bukkit/src/main/java/org/geysermc/floodgate/BukkitPlugin.java
++++ b/bukkit/src/main/java/org/geysermc/floodgate/BukkitPlugin.java
+@@ -9,17 +9,19 @@ import org.bukkit.event.Listener;
+ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+ import org.bukkit.event.player.PlayerLoginEvent;
+ import org.bukkit.event.player.PlayerQuitEvent;
+-import org.bukkit.plugin.java.JavaPlugin;
+ import org.geysermc.floodgate.command.LinkAccountCommand;
+ import org.geysermc.floodgate.command.UnlinkAccountCommand;
+ import org.geysermc.floodgate.injector.BukkitInjector;
+ import org.geysermc.floodgate.util.CommandUtil;
+ import org.geysermc.floodgate.util.ProtocolSupportUtil;
+ import org.geysermc.floodgate.util.ReflectionUtil;
++import com.birthdates.protocol.ProtocolPlugin;
++import com.birthdates.protocol.UsePlugin;
+ 
+ import java.util.logging.Level;
+ 
+-public class BukkitPlugin extends JavaPlugin implements Listener {
++@UsePlugin(name = "Floodgate")
++public class BukkitPlugin extends ProtocolPlugin implements Listener {
+     @Getter private static BukkitPlugin instance;
+     @Getter private FloodgateConfig configuration;
+     @Getter private PlayerLink playerLink;
+@@ -32,7 +34,7 @@ public class BukkitPlugin extends JavaPlugin implements Listener {
+         }
+         ReflectionUtil.setPrefix("net.minecraft.server." + getServer().getClass().getPackage().getName().split("\\.")[3]);
+ 
+-        configuration = FloodgateConfig.load(getLogger(), getDataFolder().toPath().resolve("config.yml"));
++        configuration = FloodgateConfig.load(getLogger(), getDataFolder().toPath().resolve("floodgate.yml"));
+         playerLink = PlayerLink.initialize(getLogger(), getDataFolder().toPath(), configuration);
+     }
+ 
+@@ -44,18 +46,18 @@ public class BukkitPlugin extends JavaPlugin implements Listener {
+             getLogger().log(Level.SEVERE, "Failed to inject the packet listener!", e);
+         } finally {
+             if (!BukkitInjector.isInjected()) {
+-                getServer().getPluginManager().disablePlugin(this);
++                getServer().getPluginManager().disablePlugin(this.getPlugin());
+             }
+         }
+-        CommandUtil commandUtil = new CommandUtil(this);
++        CommandUtil commandUtil = new CommandUtil(this.getPlugin());
+         getCommand(CommandUtil.LINK_ACCOUNT_COMMAND).setExecutor(new LinkAccountCommand(playerLink, commandUtil));
+         getCommand(CommandUtil.UNLINK_ACCOUNT_COMMAND).setExecutor(new UnlinkAccountCommand(playerLink, commandUtil));
+ 
+         // Register the plugin as an event listener to we get join and leave events
+-        Bukkit.getServer().getPluginManager().registerEvents(this, this);
++        Bukkit.getServer().getPluginManager().registerEvents(this, this.getPlugin());
+ 
+         // Check for ProtocolSupport
+-        ProtocolSupportUtil.checkForProtocolSupport(this);
++        ProtocolSupportUtil.checkForProtocolSupport(this.getPlugin());
+     }
+ 
+     @Override
+diff --git a/common/src/main/java/org/geysermc/floodgate/FloodgateConfig.java b/common/src/main/java/org/geysermc/floodgate/FloodgateConfig.java
+index ad77124..1eaacf7 100644
+--- a/common/src/main/java/org/geysermc/floodgate/FloodgateConfig.java
++++ b/common/src/main/java/org/geysermc/floodgate/FloodgateConfig.java
+@@ -16,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
+ import java.security.PrivateKey;
+ import java.security.spec.InvalidKeySpecException;
+ import java.util.Base64;
++import java.util.Objects;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
+@@ -68,7 +69,7 @@ public class FloodgateConfig {
+         try {
+             try {
+                 if (!configPath.toFile().exists()) {
+-                    Files.copy(FloodgateConfig.class.getClassLoader().getResourceAsStream("config.yml"), configPath);
++                    Files.copy(Objects.requireNonNull(FloodgateConfig.class.getClassLoader().getResourceAsStream("Floodgate/config.yml")), configPath);
+ 
+                     KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+                     generator.initialize(2048);
+diff --git a/pom.xml b/pom.xml
+index 6e3ff3f..35c0dae 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -29,6 +29,7 @@
+         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+         <maven.compiler.source>1.8</maven.compiler.source>
+         <maven.compiler.target>1.8</maven.compiler.target>
++        <maven.deploy.skip>true</maven.deploy.skip>
+     </properties>
+ 
+     <organization>

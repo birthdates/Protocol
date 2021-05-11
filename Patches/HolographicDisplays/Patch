@@ -1,0 +1,285 @@
+diff --git a/Plugin/pom.xml b/Plugin/pom.xml
+index 24e3ddde..7f702b7a 100644
+--- a/Plugin/pom.xml
++++ b/Plugin/pom.xml
+@@ -30,6 +30,12 @@
+ 	</repositories>
+ 
+ 	<dependencies>
++		<dependency>
++			<groupId>com.birthdates</groupId>
++			<artifactId>protocol</artifactId>
++			<version>1.0.0</version>
++			<scope>provided</scope>
++		</dependency>
+ 		<dependency>
+ 			<groupId>${project.groupId}</groupId>
+ 			<artifactId>holographicdisplays-api</artifactId>
+diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/HolographicDisplays.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/HolographicDisplays.java
+index 318fe487..739537d4 100644
+--- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/HolographicDisplays.java
++++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/HolographicDisplays.java
+@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
+ import org.bstats.bukkit.MetricsLite;
+ import org.bukkit.Bukkit;
+ import org.bukkit.ChatColor;
+-import org.bukkit.plugin.java.JavaPlugin;
+ 
+ import com.gmail.filoghost.holographicdisplays.api.internal.BackendAPI;
+ import com.gmail.filoghost.holographicdisplays.bridge.bungeecord.BungeeServerTracker;
+@@ -47,9 +46,11 @@ import com.gmail.filoghost.holographicdisplays.util.ConsoleLogger;
+ import com.gmail.filoghost.holographicdisplays.util.NMSVersion;
+ import com.gmail.filoghost.holographicdisplays.util.VersionUtils;
+ 
+-import me.filoghost.updatechecker.UpdateChecker;
++import com.birthdates.protocol.ProtocolPlugin;
++import com.birthdates.protocol.UsePlugin;
+ 
+-public class HolographicDisplays extends JavaPlugin {
++@UsePlugin(name = "HolographicDisplays")
++public class HolographicDisplays extends ProtocolPlugin {
+ 	
+ 	// The main instance of the plugin.
+ 	private static HolographicDisplays instance;
+@@ -82,19 +83,10 @@ public class HolographicDisplays extends JavaPlugin {
+ 		ConsoleLogger.setLogger(instance.getLogger());
+ 		
+ 		// Load placeholders.yml.
+-		UnicodeSymbols.load(this);
++		UnicodeSymbols.load(getPlugin());
+ 
+ 		// Load the configuration.
+-		Configuration.load(this);
+-		
+-		if (Configuration.updateNotification) {
+-			UpdateChecker.run(this, 75097, (String newVersion) -> {
+-				HolographicDisplays.newVersion = newVersion;
+-				ConsoleLogger.log(Level.INFO, "Found a new version available: " + newVersion);
+-				ConsoleLogger.log(Level.INFO, "Download it on Bukkit Dev:");
+-				ConsoleLogger.log(Level.INFO, "dev.bukkit.org/projects/holographic-displays");
+-			});
+-		}
++		Configuration.load(getPlugin());
+ 		
+ 		// The bungee chat API is required.
+ 		try {
+@@ -135,20 +127,20 @@ public class HolographicDisplays extends JavaPlugin {
+ 		hookProtocolLib();
+ 		
+ 		// Load animation files and the placeholder manager.
+-		PlaceholdersManager.load(this);
++		PlaceholdersManager.load(getPlugin());
+ 		try {
+-			AnimationsRegister.loadAnimations(this);
++			AnimationsRegister.loadAnimations(getPlugin());
+ 		} catch (Exception ex) {
+ 			ConsoleLogger.log(Level.WARNING, "Failed to load animation files!", ex);
+ 		}
+ 		
+ 		// Initalize other static classes.
+-		HologramDatabase.loadYamlFile(this);
++		HologramDatabase.loadYamlFile(getPlugin());
+ 		BungeeServerTracker.startTask(Configuration.bungeeRefreshSeconds);
+ 		
+ 		// Start repeating tasks.
+-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new BungeeCleanupTask(), 5 * 60 * 20, 5 * 60 * 20);
+-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new WorldPlayerCounterTask(), 0L, 3 * 20);
++		Bukkit.getScheduler().scheduleSyncRepeatingTask(getPlugin(), new BungeeCleanupTask(), 5 * 60 * 20, 5 * 60 * 20);
++		Bukkit.getScheduler().scheduleSyncRepeatingTask(getPlugin(), new WorldPlayerCounterTask(), 0L, 3 * 20);
+ 		
+ 		if (getCommand("holograms") == null) {
+ 			criticalShutdown(
+@@ -158,14 +150,14 @@ public class HolographicDisplays extends JavaPlugin {
+ 		}
+ 		
+ 		getCommand("holograms").setExecutor(commandHandler = new HologramsCommandHandler());
+-		Bukkit.getPluginManager().registerEvents(mainListener = new MainListener(nmsManager), this);
++		Bukkit.getPluginManager().registerEvents(mainListener = new MainListener(nmsManager), getPlugin());
+ 
+ 		// Register bStats metrics
+ 		int pluginID = 3123;
+-		new MetricsLite(this, pluginID);
++		new MetricsLite(getPlugin(), pluginID);
+ 		
+ 		// Holograms are loaded later, when the worlds are ready.
+-		Bukkit.getScheduler().runTask(this, new StartupLoadHologramsTask());
++		Bukkit.getScheduler().runTask(getPlugin(), new StartupLoadHologramsTask());
+ 		
+ 		// Enable the API.
+ 		BackendAPI.setImplementation(new DefaultBackendAPI());
+@@ -211,7 +203,6 @@ public class HolographicDisplays extends JavaPlugin {
+ 		try {
+ 			Thread.sleep(5000);
+ 		} catch (InterruptedException ex) { }
+-		instance.setEnabled(false);
+ 	}
+ 
+ 	public static HolographicDisplays getInstance() {
+@@ -251,7 +242,7 @@ public class HolographicDisplays extends JavaPlugin {
+ 		try {
+ 			ProtocolLibHook protocolLibHook = new com.gmail.filoghost.holographicdisplays.bridge.protocollib.current.ProtocolLibHookImpl();
+ 			
+-			if (protocolLibHook.hook(this, nmsManager)) {
++			if (protocolLibHook.hook(getPlugin(), nmsManager)) {
+ 				HolographicDisplays.protocolLibHook = protocolLibHook;
+ 				ConsoleLogger.log(Level.INFO, "Enabled player relative placeholders with ProtocolLib.");
+ 			}
+diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/bridge/bungeecord/BungeeChannel.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/bridge/bungeecord/BungeeChannel.java
+index 61a4a809..86f01860 100644
+--- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/bridge/bungeecord/BungeeChannel.java
++++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/bridge/bungeecord/BungeeChannel.java
+@@ -41,7 +41,7 @@ public class BungeeChannel implements PluginMessageListener {
+ 
+ 	public static BungeeChannel getInstance() {
+ 		if (instance == null) {
+-			instance = new BungeeChannel(HolographicDisplays.getInstance());
++			instance = new BungeeChannel(HolographicDisplays.getInstance().getPlugin());
+ 		}
+ 		return instance;
+ 	}
+@@ -105,7 +105,7 @@ public class BungeeChannel implements PluginMessageListener {
+ 		// OR, if you don't need to send it to a specific player
+ 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+ 		if (players.size() > 0) {
+-			players.iterator().next().sendPluginMessage(HolographicDisplays.getInstance(), getTargetChannel(), b.toByteArray());
++			players.iterator().next().sendPluginMessage(HolographicDisplays.getInstance().getPlugin(), getTargetChannel(), b.toByteArray());
+ 		}
+ 	}
+ }
+diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/bridge/bungeecord/BungeeServerTracker.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/bridge/bungeecord/BungeeServerTracker.java
+index 71f1c0ec..2e9a0c64 100644
+--- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/bridge/bungeecord/BungeeServerTracker.java
++++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/bridge/bungeecord/BungeeServerTracker.java
+@@ -155,10 +155,10 @@ public class BungeeServerTracker {
+ 			Bukkit.getScheduler().cancelTask(taskID);
+ 		}
+ 		
+-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(HolographicDisplays.getInstance(), () -> {
++		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(HolographicDisplays.getInstance().getPlugin(), () -> {
+ 				
+ 			if (Configuration.pingerEnable) {
+-				Bukkit.getScheduler().runTaskAsynchronously(HolographicDisplays.getInstance(), () -> {
++				Bukkit.getScheduler().runTaskAsynchronously(HolographicDisplays.getInstance().getPlugin(), () -> {
+ 					
+ 					for (Entry<String, ServerAddress> entry : Configuration.pingerServers.entrySet()) {
+ 						BungeeServerInfo serverInfo = getOrCreateServerInfo(entry.getKey());
+diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/commands/main/subs/ReloadCommand.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/commands/main/subs/ReloadCommand.java
+index e6b30099..c06336b2 100644
+--- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/commands/main/subs/ReloadCommand.java
++++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/commands/main/subs/ReloadCommand.java
+@@ -64,14 +64,14 @@ public class ReloadCommand extends HologramSubCommand {
+ 			
+ 			long startMillis = System.currentTimeMillis();
+ 
+-			UnicodeSymbols.load(HolographicDisplays.getInstance());
+-			Configuration.load(HolographicDisplays.getInstance());
++			UnicodeSymbols.load(HolographicDisplays.getInstance().getPlugin());
++			Configuration.load(HolographicDisplays.getInstance().getPlugin());
+ 			
+ 			BungeeServerTracker.resetTrackedServers();
+ 			BungeeServerTracker.startTask(Configuration.bungeeRefreshSeconds);
+ 			
+-			HologramDatabase.loadYamlFile(HolographicDisplays.getInstance());
+-			AnimationsRegister.loadAnimations(HolographicDisplays.getInstance());
++			HologramDatabase.loadYamlFile(HolographicDisplays.getInstance().getPlugin());
++			AnimationsRegister.loadAnimations(HolographicDisplays.getInstance().getPlugin());
+ 			
+ 			PlaceholdersManager.untrackAll();
+ 			NamedHologramManager.clearAll();
+diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/listener/MainListener.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/listener/MainListener.java
+index f12e3f02..8b1de128 100644
+--- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/listener/MainListener.java
++++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/listener/MainListener.java
+@@ -87,7 +87,7 @@ public class MainListener implements Listener, ItemPickupManager {
+ 			if (Bukkit.isPrimaryThread()) {
+ 				processChunkLoad(chunk);
+ 			} else {
+-				Bukkit.getScheduler().runTask(HolographicDisplays.getInstance(), () -> processChunkLoad(chunk));
++				Bukkit.getScheduler().runTask(HolographicDisplays.getInstance().getPlugin(), () -> processChunkLoad(chunk));
+ 			}
+ 		}
+ 	}
+@@ -156,7 +156,7 @@ public class MainListener implements Listener, ItemPickupManager {
+ 		try {
+ 			touchSlime.getTouchablePiece().getTouchHandler().onTouch(event.getPlayer());
+ 		} catch (Throwable t) {
+-			Plugin plugin = touchSlime.getParent() instanceof PluginHologram ? ((PluginHologram) touchSlime.getParent()).getOwner() : HolographicDisplays.getInstance();
++			Plugin plugin = touchSlime.getParent() instanceof PluginHologram ? ((PluginHologram) touchSlime.getParent()).getOwner() : HolographicDisplays.getInstance().getPlugin();
+ 			ConsoleLogger.log(Level.WARNING, "The plugin " + plugin.getName() + " generated an exception when the player " + event.getPlayer().getName() + " touched a hologram.", t);
+ 		}
+ 	}
+@@ -168,7 +168,7 @@ public class MainListener implements Listener, ItemPickupManager {
+ 				pickupHandler.onPickup(player);
+ 			}
+ 		} catch (Throwable t) {
+-			Plugin plugin = hologram instanceof PluginHologram ? ((PluginHologram) hologram).getOwner() : HolographicDisplays.getInstance();
++			Plugin plugin = hologram instanceof PluginHologram ? ((PluginHologram) hologram).getOwner() : HolographicDisplays.getInstance().getPlugin();
+ 			ConsoleLogger.log(Level.WARNING, "The plugin " + plugin.getName() + " generated an exception when the player " + player.getName() + " picked up an item from a hologram.", t);
+ 		}
+ 	}
+diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/AnimationsRegister.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/AnimationsRegister.java
+index 4bd21df9..412ff6a2 100644
+--- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/AnimationsRegister.java
++++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/AnimationsRegister.java
+@@ -81,7 +81,7 @@ public class AnimationsRegister {
+ 					lines.set(i, StringConverter.toReadableFormat(lines.get(i)));
+ 				}
+ 				
+-				animations.put(file.getName(), new Placeholder(HolographicDisplays.getInstance(), file.getName(), speed, new CyclicPlaceholderReplacer(lines.toArray(new String[lines.size()]))));
++				animations.put(file.getName(), new Placeholder(HolographicDisplays.getInstance().getPlugin(), file.getName(), speed, new CyclicPlaceholderReplacer(lines.toArray(new String[lines.size()]))));
+ 				ConsoleLogger.logDebug(Level.INFO, "Successfully loaded animation '"  + file.getName() + "', speed = " + speed + ".");
+ 				
+ 			} catch (Exception e) {
+diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/PlaceholdersRegister.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/PlaceholdersRegister.java
+index 31fd2ca4..aaa15afb 100644
+--- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/PlaceholdersRegister.java
++++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/PlaceholdersRegister.java
+@@ -34,23 +34,23 @@ public class PlaceholdersRegister {
+ 	// Register the default placeholders statically.
+ 	static {
+ 		
+-		register(new Placeholder(HolographicDisplays.getInstance(), "{online}", 1.0, () -> {
++		register(new Placeholder(HolographicDisplays.getInstance().getPlugin(), "{online}", 1.0, () -> {
+ 			return String.valueOf(Bukkit.getOnlinePlayers().size());
+ 		}));
+ 		
+-		register(new Placeholder(HolographicDisplays.getInstance(), "{max_players}", 10.0, () -> {
++		register(new Placeholder(HolographicDisplays.getInstance().getPlugin(), "{max_players}", 10.0, () -> {
+ 			return String.valueOf(Bukkit.getMaxPlayers());
+ 		}));
+ 		
+-		register(new Placeholder(HolographicDisplays.getInstance(), "{motd}", 60.0, () -> {
++		register(new Placeholder(HolographicDisplays.getInstance().getPlugin(), "{motd}", 60.0, () -> {
+ 			return Bukkit.getMotd();
+ 		}));
+ 		
+-		register(new Placeholder(HolographicDisplays.getInstance(), "{time}", 0.9, () -> {
++		register(new Placeholder(HolographicDisplays.getInstance().getPlugin(), "{time}", 0.9, () -> {
+ 			return Configuration.timeFormat.format(new Date());
+ 		}));
+ 		
+-		register(new Placeholder(HolographicDisplays.getInstance(), "&u", 0.2, new CyclicPlaceholderReplacer(Utils.arrayToStrings(
++		register(new Placeholder(HolographicDisplays.getInstance().getPlugin(), "&u", 0.2, new CyclicPlaceholderReplacer(Utils.arrayToStrings(
+ 				ChatColor.RED,
+ 				ChatColor.GOLD,
+ 				ChatColor.YELLOW,
+diff --git a/pom.xml b/pom.xml
+index fdff8b83..d0f1f59c 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -15,6 +15,7 @@
+ 		<maven.compiler.target>1.8</maven.compiler.target>
+ 		<maven.test.skip>true</maven.test.skip>
+ 		<spigot-api.version>1.8-R0.1-SNAPSHOT</spigot-api.version>
++		<maven.deploy.skip>true</maven.deploy.skip>
+ 	</properties>
+ 
+ 	<distributionManagement>
+@@ -272,7 +273,6 @@
+ 						</goals>
+ 						<configuration>
+ 							<rules>
+-								<reactorModuleConvergence />
+ 								<requireMavenVersion>
+ 									<version>[3.6.0,)</version>
+ 								</requireMavenVersion>

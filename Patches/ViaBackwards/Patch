@@ -1,0 +1,265 @@
+diff --git a/all/pom.xml b/all/pom.xml
+index 90ac4d8..fbc3130 100644
+--- a/all/pom.xml
++++ b/all/pom.xml
+@@ -134,12 +134,14 @@
+             <scope>compile</scope>
+         </dependency>
+ 
++<!--
+         <dependency>
+             <groupId>nl.matsv</groupId>
+             <artifactId>viabackwards-sponge</artifactId>
+             <version>${project.parent.version}</version>
+             <scope>compile</scope>
+         </dependency>
++-->
+ 
+         <dependency>
+             <groupId>nl.matsv</groupId>
+diff --git a/bukkit/pom.xml b/bukkit/pom.xml
+index 72095d9..44100fa 100644
+--- a/bukkit/pom.xml
++++ b/bukkit/pom.xml
+@@ -29,6 +29,12 @@
+     </repositories>
+ 
+     <dependencies>
++        <dependency>
++            <artifactId>protocol</artifactId>
++            <groupId>com.birthdates</groupId>
++            <version>1.0.0</version>
++            <scope>provided</scope>
++        </dependency>
+         <dependency>
+             <groupId>org.spigotmc</groupId>
+             <artifactId>spigot-api</artifactId>
+diff --git a/bukkit/src/main/java/nl/matsv/viabackwards/BukkitPlugin.java b/bukkit/src/main/java/nl/matsv/viabackwards/BukkitPlugin.java
+index 778e2dd..64a0f39 100644
+--- a/bukkit/src/main/java/nl/matsv/viabackwards/BukkitPlugin.java
++++ b/bukkit/src/main/java/nl/matsv/viabackwards/BukkitPlugin.java
+@@ -14,13 +14,15 @@ import nl.matsv.viabackwards.api.ViaBackwardsPlatform;
+ import nl.matsv.viabackwards.listener.FireDamageListener;
+ import nl.matsv.viabackwards.listener.FireExtinguishListener;
+ import nl.matsv.viabackwards.listener.LecternInteractListener;
+-import org.bukkit.plugin.java.JavaPlugin;
++import com.birthdates.protocol.ProtocolPlugin;
++import com.birthdates.protocol.UsePlugin;
+ import us.myles.ViaVersion.api.Via;
+ import us.myles.ViaVersion.api.protocol.ProtocolRegistry;
+ import us.myles.ViaVersion.api.protocol.ProtocolVersion;
+ import us.myles.ViaVersion.bukkit.platform.BukkitViaLoader;
+ 
+-public class BukkitPlugin extends JavaPlugin implements ViaBackwardsPlatform {
++@UsePlugin(name = "ViaBackwards", weight = 0.9F)
++public class BukkitPlugin extends ProtocolPlugin implements ViaBackwardsPlatform {
+ 
+     @Override
+     public void onEnable() {
+@@ -43,6 +45,6 @@ public class BukkitPlugin extends JavaPlugin implements ViaBackwardsPlatform {
+ 
+     @Override
+     public void disable() {
+-        getPluginLoader().disablePlugin(this);
++        getPluginLoader().disablePlugin(this.getPlugin());
+     }
+ }
+diff --git a/bukkit/src/main/java/nl/matsv/viabackwards/listener/FireDamageListener.java b/bukkit/src/main/java/nl/matsv/viabackwards/listener/FireDamageListener.java
+index 40c28fe..e251e44 100644
+--- a/bukkit/src/main/java/nl/matsv/viabackwards/listener/FireDamageListener.java
++++ b/bukkit/src/main/java/nl/matsv/viabackwards/listener/FireDamageListener.java
+@@ -14,7 +14,7 @@ import us.myles.ViaVersion.bukkit.listeners.ViaBukkitListener;
+ public class FireDamageListener extends ViaBukkitListener {
+ 
+     public FireDamageListener(BukkitPlugin plugin) {
+-        super(plugin, Protocol1_11_1To1_12.class);
++        super(plugin.getPlugin(), Protocol1_11_1To1_12.class);
+     }
+ 
+     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+diff --git a/bukkit/src/main/java/nl/matsv/viabackwards/listener/FireExtinguishListener.java b/bukkit/src/main/java/nl/matsv/viabackwards/listener/FireExtinguishListener.java
+index c47c5f4..7122f49 100644
+--- a/bukkit/src/main/java/nl/matsv/viabackwards/listener/FireExtinguishListener.java
++++ b/bukkit/src/main/java/nl/matsv/viabackwards/listener/FireExtinguishListener.java
+@@ -14,7 +14,7 @@ import us.myles.ViaVersion.bukkit.listeners.ViaBukkitListener;
+ public class FireExtinguishListener extends ViaBukkitListener {
+ 
+     public FireExtinguishListener(BukkitPlugin plugin) {
+-        super(plugin, Protocol1_15_2To1_16.class);
++        super(plugin.getPlugin(), Protocol1_15_2To1_16.class);
+     }
+ 
+     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+diff --git a/bukkit/src/main/java/nl/matsv/viabackwards/listener/LecternInteractListener.java b/bukkit/src/main/java/nl/matsv/viabackwards/listener/LecternInteractListener.java
+index d8b3b7f..6ecaa96 100644
+--- a/bukkit/src/main/java/nl/matsv/viabackwards/listener/LecternInteractListener.java
++++ b/bukkit/src/main/java/nl/matsv/viabackwards/listener/LecternInteractListener.java
+@@ -16,7 +16,7 @@ import us.myles.ViaVersion.bukkit.listeners.ViaBukkitListener;
+ public class LecternInteractListener extends ViaBukkitListener {
+ 
+     public LecternInteractListener(BukkitPlugin plugin) {
+-        super(plugin, Protocol1_13_2To1_14.class);
++        super(plugin.getPlugin(), Protocol1_13_2To1_14.class);
+     }
+ 
+     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+diff --git a/core/src/main/java/nl/matsv/viabackwards/api/ViaBackwardsPlatform.java b/core/src/main/java/nl/matsv/viabackwards/api/ViaBackwardsPlatform.java
+index 8163734..16e74a2 100644
+--- a/core/src/main/java/nl/matsv/viabackwards/api/ViaBackwardsPlatform.java
++++ b/core/src/main/java/nl/matsv/viabackwards/api/ViaBackwardsPlatform.java
+@@ -104,7 +104,7 @@ public interface ViaBackwardsPlatform {
+     Logger getLogger();
+ 
+     default boolean isOutdated() {
+-        String vvVersion = Via.getPlatform().getPluginVersion();
++/*        String vvVersion = Via.getPlatform().getPluginVersion();
+         if (vvVersion != null && new Version(vvVersion).compareTo(new Version(MINIMUM_VV_VERSION + "--")) < 0) {
+             getLogger().severe("================================");
+             getLogger().severe("YOUR VIAVERSION IS OUTDATED");
+@@ -115,7 +115,7 @@ public interface ViaBackwardsPlatform {
+ 
+             disable();
+             return true;
+-        }
++        }*/
+ 
+         return false;
+     }
+diff --git a/core/src/main/java/nl/matsv/viabackwards/api/rewriters/SoundRewriter.java b/core/src/main/java/nl/matsv/viabackwards/api/rewriters/SoundRewriter.java
+index badb80b..851f587 100644
+--- a/core/src/main/java/nl/matsv/viabackwards/api/rewriters/SoundRewriter.java
++++ b/core/src/main/java/nl/matsv/viabackwards/api/rewriters/SoundRewriter.java
+@@ -36,11 +36,15 @@ public class SoundRewriter extends us.myles.ViaVersion.api.rewriters.SoundRewrit
+ 
+     public PacketHandler getNamedSoundHandler() {
+         return wrapper -> {
++            if(wrapper.is(Type.VAR_INT, 0)) {
++                int mappedId = protocol.getMappingData().getSoundMappings().getNewId(wrapper.get(Type.VAR_INT, 0));
++                wrapper.set(Type.VAR_INT, 0, mappedId);
++                return;
++            }
+             String soundId = wrapper.get(Type.STRING, 0);
+             if (soundId.startsWith("minecraft:")) {
+                 soundId = soundId.substring(10);
+             }
+-
+             String mappedId = protocol.getMappingData().getMappedNamedSound(soundId);
+             if (mappedId == null) return;
+             if (!mappedId.isEmpty()) {
+diff --git a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_13_2to1_14/packets/BlockItemPackets1_14.java b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_13_2to1_14/packets/BlockItemPackets1_14.java
+index 6e7c44d..1614d02 100644
+--- a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_13_2to1_14/packets/BlockItemPackets1_14.java
++++ b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_13_2to1_14/packets/BlockItemPackets1_14.java
+@@ -423,19 +423,19 @@ public class BlockItemPackets1_14 extends nl.matsv.viabackwards.api.rewriters.It
+                             ChunkSection section = chunk.getSections()[i];
+                             if (section == null) continue;
+ 
+-                            if (chunkLight == null) {
++                           // if (chunkLight == null) {
+                                 section.setBlockLight(ChunkLightStorage.FULL_LIGHT);
+                                 if (clientWorld.getEnvironment() == Environment.NORMAL) {
+                                     section.setSkyLight(ChunkLightStorage.FULL_LIGHT);
+                                 }
+-                            } else {
++/*                            } else {
+                                 final byte[] blockLight = chunkLight.getBlockLight()[i];
+                                 section.setBlockLight(blockLight != null ? blockLight : ChunkLightStorage.FULL_LIGHT);
+                                 if (clientWorld.getEnvironment() == Environment.NORMAL) {
+                                     final byte[] skyLight = chunkLight.getSkyLight()[i];
+                                     section.setSkyLight(skyLight != null ? skyLight : ChunkLightStorage.FULL_LIGHT);
+                                 }
+-                            }
++                            }*/
+ 
+                             if (Via.getConfig().isNonFullBlockLightFix() && section.getNonAirBlocksCount() != 0 && section.hasBlockLight()) {
+                                 for (int x = 0; x < 16; x++) {
+diff --git a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_13_2to1_14/storage/ChunkLightStorage.java b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_13_2to1_14/storage/ChunkLightStorage.java
+index dee99c4..8f2cf1d 100644
+--- a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_13_2to1_14/storage/ChunkLightStorage.java
++++ b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_13_2to1_14/storage/ChunkLightStorage.java
+@@ -30,7 +30,7 @@ public class ChunkLightStorage extends StoredObject {
+     }
+ 
+     public void setStoredLight(byte[][] skyLight, byte[][] blockLight, int x, int z) {
+-        storedLight.put(getChunkSectionIndex(x, z), new ChunkLight(skyLight, blockLight));
++     //   storedLight.put(getChunkSectionIndex(x, z), new ChunkLight(skyLight, blockLight));
+     }
+ 
+     public ChunkLight getStoredLight(int x, int z) {
+diff --git a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_14_4to1_15/data/EntityTypeMapping.java b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_14_4to1_15/data/EntityTypeMapping.java
+index c0d4948..94bc634 100644
+--- a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_14_4to1_15/data/EntityTypeMapping.java
++++ b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_14_4to1_15/data/EntityTypeMapping.java
+@@ -6,7 +6,7 @@ public class EntityTypeMapping {
+ 
+     // There's only the bee, so not much to do here
+     public static int getOldEntityId(int entityId) {
+-        if (entityId == 4) return Entity1_14Types.EntityType.PUFFERFISH.getId(); // Flying pufferfish!
++        if (entityId == 4) return Entity1_14Types.EntityType.BAT.getId(); // Flying pufferfish!
+         return entityId >= 5 ? entityId - 1 : entityId;
+     }
+ }
+diff --git a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_14_4to1_15/packets/EntityPackets1_15.java b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_14_4to1_15/packets/EntityPackets1_15.java
+index 1cd95ae..f62441d 100644
+--- a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_14_4to1_15/packets/EntityPackets1_15.java
++++ b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_14_4to1_15/packets/EntityPackets1_15.java
+@@ -210,7 +210,7 @@ public class EntityPackets1_15 extends EntityRewriter<Protocol1_14_4To1_15> {
+         registerMetaHandler().filter(Entity1_15Types.EntityType.BEE, 15).removed();
+         registerMetaHandler().filter(Entity1_15Types.EntityType.BEE, 16).removed();
+ 
+-        mapEntity(Entity1_15Types.EntityType.BEE, Entity1_15Types.EntityType.PUFFERFISH).jsonName("Bee").spawnMetadata(storage -> {
++        mapEntity(Entity1_15Types.EntityType.BEE, Entity1_15Types.EntityType.BAT).jsonName("Bee").spawnMetadata(storage -> {
+             storage.add(new Metadata(14, MetaType1_14.Boolean, false));
+             storage.add(new Metadata(15, MetaType1_14.VarInt, 2));
+         });
+diff --git a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_9_4to1_10/Protocol1_9_4To1_10.java b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_9_4to1_10/Protocol1_9_4To1_10.java
+index d999951..57c44f1 100644
+--- a/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_9_4to1_10/Protocol1_9_4To1_10.java
++++ b/core/src/main/java/nl/matsv/viabackwards/protocol/protocol1_9_4to1_10/Protocol1_9_4To1_10.java
+@@ -14,6 +14,7 @@ import nl.matsv.viabackwards.api.BackwardsProtocol;
+ import nl.matsv.viabackwards.api.data.BackwardsMappings;
+ import nl.matsv.viabackwards.api.entities.storage.EntityTracker;
+ import nl.matsv.viabackwards.api.rewriters.SoundRewriter;
++import nl.matsv.viabackwards.protocol.protocol1_13_2to1_14.packets.SoundPackets1_14;
+ import nl.matsv.viabackwards.protocol.protocol1_9_4to1_10.packets.BlockItemPackets1_10;
+ import nl.matsv.viabackwards.protocol.protocol1_9_4to1_10.packets.EntityPackets1_10;
+ import us.myles.ViaVersion.api.PacketWrapper;
+@@ -68,7 +69,7 @@ public class Protocol1_9_4To1_10 extends BackwardsProtocol<ClientboundPackets1_9
+                 map(Type.INT); // 4 - z
+                 map(Type.FLOAT); // 5 - Volume
+                 map(Type.FLOAT, TO_OLD_PITCH); // 6 - Pitch
+-                handler(soundRewriter.getSoundHandler());
++                handler(soundRewriter.getNamedSoundHandler());
+             }
+         });
+ 
+diff --git a/pom.xml b/pom.xml
+index 67742c3..63ee12b 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -34,12 +34,18 @@
+         </developer>
+     </developers>
+ 
++    <properties>
++        <maven.deploy.skip>true</maven.deploy.skip>
++    </properties>
++
+     <modules>
+         <module>core</module>
+         <module>bukkit</module>
+         <module>bungee</module>
+         <module>fabric</module>
++<!--
+         <module>sponge</module>
++-->
+         <module>velocity</module>
+         <module>all</module>
+     </modules>
+@@ -77,4 +83,4 @@
+             <scope>provided</scope>
+         </dependency>
+     </dependencies>
+-</project>
++</project>
+\ No newline at end of file

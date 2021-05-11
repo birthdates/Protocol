@@ -1,0 +1,69 @@
+diff --git a/bukkit/pom.xml b/bukkit/pom.xml
+index e3a6008..366f188 100644
+--- a/bukkit/pom.xml
++++ b/bukkit/pom.xml
+@@ -20,6 +20,12 @@
+     </repositories>
+ 
+     <dependencies>
++        <dependency>
++            <artifactId>protocol</artifactId>
++            <groupId>com.birthdates</groupId>
++            <version>1.0.0</version>
++            <scope>provided</scope>
++        </dependency>
+         <!-- Spigot API -->
+         <dependency>
+             <groupId>org.spigotmc</groupId>
+diff --git a/bukkit/src/main/java/de/gerrygames/viarewind/BukkitPlugin.java b/bukkit/src/main/java/de/gerrygames/viarewind/BukkitPlugin.java
+index 1e8ef2e..621dbbd 100644
+--- a/bukkit/src/main/java/de/gerrygames/viarewind/BukkitPlugin.java
++++ b/bukkit/src/main/java/de/gerrygames/viarewind/BukkitPlugin.java
+@@ -2,11 +2,13 @@ package de.gerrygames.viarewind;
+ 
+ import de.gerrygames.viarewind.api.ViaRewindConfigImpl;
+ import de.gerrygames.viarewind.api.ViaRewindPlatform;
+-import org.bukkit.plugin.java.JavaPlugin;
++import com.birthdates.protocol.ProtocolPlugin;
++import com.birthdates.protocol.UsePlugin;
+ 
+ import java.io.File;
+ 
+-public class BukkitPlugin extends JavaPlugin implements ViaRewindPlatform {
++@UsePlugin(name = "ViaRewind", weight = 0.9F)
++public class BukkitPlugin extends ProtocolPlugin implements ViaRewindPlatform {
+ 	@Override
+ 	public void onEnable() {
+ 		ViaRewindConfigImpl conf = new ViaRewindConfigImpl(new File(getDataFolder(), "config.yml"));
+diff --git a/core/src/main/java/de/gerrygames/viarewind/protocol/protocol1_7_6_10to1_8/provider/CompressionHandlerProvider.java b/core/src/main/java/de/gerrygames/viarewind/protocol/protocol1_7_6_10to1_8/provider/CompressionHandlerProvider.java
+index 78ca04b..47b0fb9 100644
+--- a/core/src/main/java/de/gerrygames/viarewind/protocol/protocol1_7_6_10to1_8/provider/CompressionHandlerProvider.java
++++ b/core/src/main/java/de/gerrygames/viarewind/protocol/protocol1_7_6_10to1_8/provider/CompressionHandlerProvider.java
+@@ -28,7 +28,7 @@ public class CompressionHandlerProvider implements Provider {
+ 			pipeline.addBefore(Via.getManager().getInjector().getDecoderName(), "decompress", getDecoder(threshold));
+ 		} else {
+ 			CompressionSendStorage storage = user.get(CompressionSendStorage.class);
+-			storage.setRemoveCompression(true);
++			if(storage != null) storage.setRemoveCompression(true);
+ 		}
+ 	}
+ 
+diff --git a/pom.xml b/pom.xml
+index 1684151..3f19b13 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -26,6 +26,7 @@
+         <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
+         <maven.compiler.source>1.8</maven.compiler.source>
+         <maven.compiler.target>1.8</maven.compiler.target>
++        <maven.deploy.skip>true</maven.deploy.skip>
+     </properties>
+ 
+     <repositories>
+@@ -61,4 +62,4 @@
+         </dependency>
+     </dependencies>
+ 
+-</project>
++</project>
+\ No newline at end of file

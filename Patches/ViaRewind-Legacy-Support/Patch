@@ -1,0 +1,132 @@
+diff --cc src/main/java/de/gerrygames/viarewind/legacysupport/BukkitPlugin.java
+index e34ca90,3632dad..0000000
+--- a/src/main/java/de/gerrygames/viarewind/legacysupport/BukkitPlugin.java
++++ b/src/main/java/de/gerrygames/viarewind/legacysupport/BukkitPlugin.java
+@@@ -10,11 -10,13 +10,14 @@@ import de.gerrygames.viarewind.legacysu
+  import de.gerrygames.viarewind.legacysupport.versioninfo.VersionInformer;
+  import org.bukkit.Bukkit;
+  import org.bukkit.configuration.file.FileConfiguration;
+- import org.bukkit.plugin.java.JavaPlugin;
+  import org.bukkit.scheduler.BukkitRunnable;
+ +import us.myles.ViaVersion.api.Via;
++ import com.birthdates.protocol.ProtocolPlugin;
++ import com.birthdates.protocol.UsePlugin;
++ import us.myles.ViaVersion.api.protocol.ProtocolRegistry;
+  
+- public class BukkitPlugin extends JavaPlugin {
++ @UsePlugin(name = "ViaRewind-Legacy-Support", weight = 0.9F)
++ public class BukkitPlugin extends ProtocolPlugin {
+  	private static BukkitPlugin instance;
+  
+  	@Override
+@@@ -27,25 -29,24 +30,25 @@@
+  		new BukkitRunnable() {
+  			@Override
+  			public void run() {
+ -				if (ProtocolRegistry.SERVER_PROTOCOL == -1) return;
+ +				int serverProtocol = Via.getAPI().getServerVersion().lowestSupportedVersion();
+ +				if (serverProtocol == -1) return;
+  				cancel();
+ -				if (ProtocolRegistry.SERVER_PROTOCOL > 5 && config.getBoolean("enchanting-gui-fix"))
+ -					Bukkit.getPluginManager().registerEvents(new EnchantingListener(), getPlugin());
+ -				if (ProtocolRegistry.SERVER_PROTOCOL > 78 && config.getBoolean("brewing-stand-gui-fix"))
+ -					Bukkit.getPluginManager().registerEvents(new BrewingListener(), getPlugin());
+ -				if (ProtocolRegistry.SERVER_PROTOCOL > 84 && config.getBoolean("lily-pad-fix"))
+ +				if (serverProtocol > 5 && config.getBoolean("enchanting-gui-fix"))
+- 					Bukkit.getPluginManager().registerEvents(new EnchantingListener(), BukkitPlugin.this);
+++					Bukkit.getPluginManager().registerEvents(new EnchantingListener(), BukkitPlugin.this.getPlugin());
+ +				if (serverProtocol > 78 && config.getBoolean("brewing-stand-gui-fix"))
+- 					Bukkit.getPluginManager().registerEvents(new BrewingListener(), BukkitPlugin.this);
+++					Bukkit.getPluginManager().registerEvents(new BrewingListener(), BukkitPlugin.this.getPlugin());
+ +				if (serverProtocol > 84 && config.getBoolean("lily-pad-fix"))
+  					BoundingBoxFixer.fixLilyPad();
+ -				if (ProtocolRegistry.SERVER_PROTOCOL > 48 && config.getBoolean("ladder-fix"))
+ +				if (serverProtocol > 48 && config.getBoolean("ladder-fix"))
+  					BoundingBoxFixer.fixLadder();
+ -				if (ProtocolRegistry.SERVER_PROTOCOL > 47 && config.getBoolean("sound-fix"))
+ -					Bukkit.getPluginManager().registerEvents(new SoundListener(), getPlugin());
+ -				if (ProtocolRegistry.SERVER_PROTOCOL > 5 && config.getBoolean("slime-fix"))
+ -					Bukkit.getPluginManager().registerEvents(new BounceListener(), getPlugin());
+ -				if (ProtocolRegistry.SERVER_PROTOCOL > 76 && config.getBoolean("elytra-fix"))
+ -					Bukkit.getPluginManager().registerEvents(new ElytraListener(), getPlugin());
+ -				if (ProtocolRegistry.SERVER_PROTOCOL > 54 && config.getBoolean("area-effect-cloud-particles"))
+ -					Bukkit.getPluginManager().registerEvents(new AreaEffectCloudListener(), getPlugin());
+ +				if (serverProtocol > 47 && config.getBoolean("sound-fix"))
+- 					Bukkit.getPluginManager().registerEvents(new SoundListener(), BukkitPlugin.this);
+++					Bukkit.getPluginManager().registerEvents(new SoundListener(), BukkitPlugin.this.getPlugin());
+ +				if (serverProtocol > 5 && config.getBoolean("slime-fix"))
+- 					Bukkit.getPluginManager().registerEvents(new BounceListener(), BukkitPlugin.this);
+++					Bukkit.getPluginManager().registerEvents(new BounceListener(), BukkitPlugin.this.getPlugin());
+ +				if (serverProtocol > 76 && config.getBoolean("elytra-fix"))
+- 					Bukkit.getPluginManager().registerEvents(new ElytraListener(), BukkitPlugin.this);
+++					Bukkit.getPluginManager().registerEvents(new ElytraListener(), BukkitPlugin.this.getPlugin());
+ +				if (serverProtocol > 54 && config.getBoolean("area-effect-cloud-particles"))
+- 					Bukkit.getPluginManager().registerEvents(new AreaEffectCloudListener(), BukkitPlugin.this);
+++					Bukkit.getPluginManager().registerEvents(new AreaEffectCloudListener(), BukkitPlugin.this.getPlugin());
+  				if (config.getBoolean("versioninfo.active"))
+  					new VersionInformer();
+  			}
+diff --cc src/main/java/de/gerrygames/viarewind/legacysupport/listener/SoundListener.java
+index 2999b0d,ef3bad0..0000000
+--- a/src/main/java/de/gerrygames/viarewind/legacysupport/listener/SoundListener.java
++++ b/src/main/java/de/gerrygames/viarewind/legacysupport/listener/SoundListener.java
+diff --git a/pom.xml b/pom.xml
+index 955783c..c8fe3fd 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -16,6 +16,7 @@
+         <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
+         <maven.compiler.source>1.8</maven.compiler.source>
+         <maven.compiler.target>1.8</maven.compiler.target>
++        <maven.deploy.skip>true</maven.deploy.skip>
+     </properties>
+ 
+     <repositories>
+@@ -32,7 +33,7 @@
+     <dependencies>
+         <dependency>
+             <groupId>com.birthdates</groupId>
+-            <artifactId>Protocol</artifactId>
++            <artifactId>protocol</artifactId>
+             <version>1.0.0</version>
+             <scope>provided</scope>
+         </dependency>
+diff --git a/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin$1.class b/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin$1.class
+index 8424984..0740d3a 100644
+Binary files a/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin$1.class and b/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin$1.class differ
+diff --git a/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin.class b/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin.class
+index 2e78134..f624556 100644
+Binary files a/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin.class and b/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin.class differ
+diff --git a/target/classes/de/gerrygames/viarewind/legacysupport/injector/BoundingBoxFixer.class b/target/classes/de/gerrygames/viarewind/legacysupport/injector/BoundingBoxFixer.class
+index 7da9061..4efdeca 100644
+Binary files a/target/classes/de/gerrygames/viarewind/legacysupport/injector/BoundingBoxFixer.class and b/target/classes/de/gerrygames/viarewind/legacysupport/injector/BoundingBoxFixer.class differ
+diff --git a/target/classes/de/gerrygames/viarewind/legacysupport/listener/SoundListener.class b/target/classes/de/gerrygames/viarewind/legacysupport/listener/SoundListener.class
+index f12b5cd..6bd8128 100644
+Binary files a/target/classes/de/gerrygames/viarewind/legacysupport/listener/SoundListener.class and b/target/classes/de/gerrygames/viarewind/legacysupport/listener/SoundListener.class differ
+diff --git a/target/classes/plugin.yml b/target/classes/plugin.yml
+index ad10a32..6505181 100644
+--- a/target/classes/plugin.yml
++++ b/target/classes/plugin.yml
+@@ -1,5 +1,5 @@
+ name: ViaRewind-Legacy-Support
+-version: 1.3.3
++version: 1.3.4
+ main: de.gerrygames.viarewind.legacysupport.BukkitPlugin
+ api-version: 1.13
+ 
+diff --git a/target/maven-archiver/pom.properties b/target/maven-archiver/pom.properties
+index c6bc839..27280b2 100644
+--- a/target/maven-archiver/pom.properties
++++ b/target/maven-archiver/pom.properties
+@@ -1,5 +1,5 @@
+ #Generated by Maven
+-#Tue May 11 11:04:57 EDT 2021
+-version=1.3.3
++#Tue May 11 11:15:55 EDT 2021
++version=1.3.4
+ groupId=de.gerrygames
+ artifactId=viarewind-legacy-support
+diff --git a/target/viarewind-legacy-support-1.3.3.jar b/target/viarewind-legacy-support-1.3.3.jar
+deleted file mode 100644
+index 48ec265..0000000
+Binary files a/target/viarewind-legacy-support-1.3.3.jar and /dev/null differ

@@ -1,0 +1,774 @@
+diff --cc pom.xml
+index 09146742,717ab208..00000000
+--- a/pom.xml
++++ b/pom.xml
+@@@ -1,335 -1,342 +1,340 @@@
+  <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+- 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+- 	<modelVersion>4.0.0</modelVersion>
++          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++     <modelVersion>4.0.0</modelVersion>
+      <groupId>com.comphenix.protocol</groupId>
+ -    <artifactId>ProtocolLib</artifactId>
+ -    <name>ProtocolLib</name>
+ -    <version>4.6.0</version>
+ +	<artifactId>ProtocolLib</artifactId>
+ +	<name>ProtocolLib</name>
+ +	<version>4.6.1-SNAPSHOT</version>
+  
+- 	<description>Provides read/write access to the Minecraft protocol.</description>
+- 	<url>https://github.com/dmulloy2/ProtocolLib</url>
+- 	<packaging>jar</packaging>
+- 	<inceptionYear>2012</inceptionYear>
++     <description>Provides read/write access to the Minecraft protocol.</description>
++     <url>https://github.com/dmulloy2/ProtocolLib</url>
++     <packaging>jar</packaging>
++     <inceptionYear>2012</inceptionYear>
+  
+- 	<properties>
+- 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+- 		<project.build.number></project.build.number>
+- 		<project.fullVersion>${project.version}</project.fullVersion>
++     <properties>
++         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++         <project.build.number></project.build.number>
++         <project.fullVersion>${project.version}</project.fullVersion>
+  
+- 		<powermock.version>2.0.7</powermock.version>
+- 		<spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
+- 	</properties>
++         <powermock.version>2.0.7</powermock.version>
++         <spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
++         <skipTests>true</skipTests>
+++        <maven.deploy.skip>true</maven.deploy.skip>
++     </properties>
+  
+- 	<build>
+- 		<defaultGoal>clean install</defaultGoal>
+- 		<sourceDirectory>src/main/java</sourceDirectory>
+- 		<testSourceDirectory>src/test/java</testSourceDirectory>
+- 		<resources>
+- 			<resource>
+- 				<directory>src/main/resources</directory>
+- 				<filtering>true</filtering>
+- 				<excludes>
+- 					<exclude>**/*.java</exclude>
+- 				</excludes>
+- 			</resource>
+- 		</resources>
++     <build>
++         <defaultGoal>clean install</defaultGoal>
++         <sourceDirectory>src/main/java</sourceDirectory>
++         <testSourceDirectory>src/test/java</testSourceDirectory>
++         <resources>
++             <resource>
++                 <directory>src/main/resources</directory>
++                 <filtering>true</filtering>
++                 <excludes>
++                     <exclude>**/*.java</exclude>
++                 </excludes>
++             </resource>
++         </resources>
+  
+- 		<plugins>
+- 			<plugin>
+- 				<groupId>org.apache.maven.plugins</groupId>
+- 				<artifactId>maven-shade-plugin</artifactId>
+- 				<version>3.2.4</version>
+- 				<executions>
+- 					<execution>
+- 						<phase>package</phase>
+- 						<goals>
+- 							<goal>shade</goal>
+- 						</goals>
+- 						<configuration>
+- 							<shadedArtifactAttached>false</shadedArtifactAttached>
+- 							<createDependencyReducedPom>false</createDependencyReducedPom>
++         <plugins>
++             <plugin>
++                 <groupId>org.apache.maven.plugins</groupId>
++                 <artifactId>maven-shade-plugin</artifactId>
++                 <version>3.2.4</version>
++                 <executions>
++                     <execution>
++                         <phase>package</phase>
++                         <goals>
++                             <goal>shade</goal>
++                         </goals>
++                         <configuration>
++                             <shadedArtifactAttached>false</shadedArtifactAttached>
++                             <createDependencyReducedPom>false</createDependencyReducedPom>
+  
+- 							<relocations>
+- 								<relocation>
+- 									<pattern>net.bytebuddy</pattern>
+- 									<shadedPattern>com.comphenix.net.bytebuddy</shadedPattern>
+- 								</relocation>
+- 							</relocations>
++                             <relocations>
++                                 <relocation>
++                                     <pattern>net.bytebuddy</pattern>
++                                     <shadedPattern>com.comphenix.net.bytebuddy</shadedPattern>
++                                 </relocation>
++                             </relocations>
+  
+- 							<artifactSet>
+- 								<excludes>
+- 									<exclude>org.spigotmc:spigot</exclude>
+- 									<exclude>org.spigotmc:spigot-api</exclude>
+- 									<exclude>junit:junit</exclude>
+- 									<exclude>io.netty:*</exclude>
+- 								</excludes>
+- 							</artifactSet>
+- 						</configuration>
+- 					</execution>
+- 				</executions>
+- 			</plugin>
++                             <artifactSet>
++                                 <excludes>
++                                     <exclude>org.spigotmc:spigot</exclude>
++                                     <exclude>org.spigotmc:spigot-api</exclude>
++                                     <exclude>junit:junit</exclude>
++                                     <exclude>io.netty:*</exclude>
++                                 </excludes>
++                             </artifactSet>
++                         </configuration>
++                     </execution>
++                 </executions>
++             </plugin>
+  
+- 			<plugin>
+- 				<artifactId>maven-compiler-plugin</artifactId>
+- 				<version>3.8.1</version>
+- 				<configuration>
+- 					<source>1.8</source>
+- 					<target>1.8</target>
+- 				</configuration>
+- 			</plugin>
++             <plugin>
++                 <artifactId>maven-compiler-plugin</artifactId>
++                 <version>3.8.1</version>
++                 <configuration>
++                     <source>1.8</source>
++                     <target>1.8</target>
++                 </configuration>
++             </plugin>
+  
+- 			<plugin>
+- 				<groupId>org.apache.maven.plugins</groupId>
+- 				<artifactId>maven-jar-plugin</artifactId>
+- 				<version>3.2.0</version>
+- 				<configuration>
+- 					<archive>
+- 						<manifestEntries>
+- 							<Main-Class>com.comphenix.protocol.Application</Main-Class>
+- 							<Implementation-Title>ProtocolLib</Implementation-Title>
+- 							<Implementation-Version>${project.fullVersion}</Implementation-Version>
+- 							<Implementation-Vendor>dmulloy2</Implementation-Vendor>
+- 						</manifestEntries>
+- 					</archive>
+- 					<finalName>${project.name}</finalName>
+- 				</configuration>
+- 			</plugin>
++             <plugin>
++                 <groupId>org.apache.maven.plugins</groupId>
++                 <artifactId>maven-jar-plugin</artifactId>
++                 <version>3.2.0</version>
++                 <configuration>
++                     <archive>
++                         <manifestEntries>
++                             <Main-Class>com.comphenix.protocol.Application</Main-Class>
++                             <Implementation-Title>ProtocolLib</Implementation-Title>
++                             <Implementation-Version>${project.fullVersion}</Implementation-Version>
++                             <Implementation-Vendor>dmulloy2</Implementation-Vendor>
++                         </manifestEntries>
++                     </archive>
++                     <finalName>${project.name}</finalName>
++                 </configuration>
++             </plugin>
+  
+- 			<plugin>
+- 				<groupId>org.apache.maven.plugins</groupId>
+- 				<artifactId>maven-surefire-plugin</artifactId>
+- 				<version>3.0.0-M5</version>
+- 				<configuration>
+- 					<trimStackTrace>false</trimStackTrace>
+- 					<useFile>false</useFile>
+- 					<systemProperties>
+- 						<property>
+- 							<name>projectVersion</name>
+- 							<value>${project.version}</value>
+- 						</property>
+- 					</systemProperties>
+- 				</configuration>
+- 			</plugin>
++             <plugin>
++                 <groupId>org.apache.maven.plugins</groupId>
++                 <artifactId>maven-surefire-plugin</artifactId>
++                 <version>3.0.0-M5</version>
++                 <configuration>
++                     <trimStackTrace>false</trimStackTrace>
++                     <useFile>false</useFile>
++                     <systemProperties>
++                         <property>
++                             <name>projectVersion</name>
++                             <value>${project.version}</value>
++                         </property>
++                     </systemProperties>
++                 </configuration>
++             </plugin>
+  
+- 			<plugin>
+- 				<artifactId>maven-javadoc-plugin</artifactId>
+- 				<version>3.2.0</version>
+- 				<configuration>
+- 					<failOnError>false</failOnError>
+- 					<encoding>ISO-8859-1</encoding>
+- 					<doctitle>ProtocolLib JavaDocs</doctitle>
+- 					<windowtitle>ProtocolLib JavaDocs</windowtitle>
+- 					<bottom>Copyright &#169; {inceptionYear}&#x2013;{currentYear}
+- 						Comphenix and dmulloy2. Licensed under the GNU GPL v2.</bottom>
+- 					<additionalOptions>
+- 						<additionalOption>-Xdoclint:none</additionalOption>
+- 					</additionalOptions>
+- 				</configuration>
+- 				<executions>
+- 					<execution>
+- 						<phase>install</phase>
+- 						<goals>
+- 							<goal>aggregate</goal>
+- 						</goals>
+- 					</execution>
+- 				</executions>
+- 			</plugin>
+- 		</plugins>
+- 	</build>
++             <plugin>
++                 <artifactId>maven-javadoc-plugin</artifactId>
++                 <version>3.2.0</version>
++                 <configuration>
++                     <failOnError>false</failOnError>
++                     <encoding>ISO-8859-1</encoding>
++                     <doctitle>ProtocolLib JavaDocs</doctitle>
++                     <windowtitle>ProtocolLib JavaDocs</windowtitle>
++                     <bottom>Copyright &#169; {inceptionYear}&#x2013;{currentYear}
++                         Comphenix and dmulloy2. Licensed under the GNU GPL v2.</bottom>
++                     <additionalOptions>
++                         <additionalOption>-Xdoclint:none</additionalOption>
++                     </additionalOptions>
++                 </configuration>
++                 <executions>
++                     <execution>
++                         <phase>install</phase>
++                         <goals>
++                             <goal>aggregate</goal>
++                         </goals>
++                     </execution>
++                 </executions>
++             </plugin>
++         </plugins>
++     </build>
+  
+ -    <profiles>
+ -        <profile>
+ -            <id>jenkins</id>
+ -            <activation>
+ -                <property>
+ -                    <name>env.BUILD_NUMBER</name>
+ -                </property>
+ -            </activation>
+ -            <properties>
+ -                <project.build.number>-b${env.BUILD_NUMBER}</project.build.number>
+ -                <!--<project.fullVersion>${project.version}${project.build.number}</project.fullVersion>-->
+ -                <project.fullVersion>${project.version}</project.fullVersion>
+ -            </properties>
+ -        </profile>
+ +	<profiles>
+ +		<profile>
+ +			<id>jenkins</id>
+ +			<activation>
+ +				<property>
+ +					<name>env.BUILD_NUMBER</name>
+ +				</property>
+ +			</activation>
+ +			<properties>
+ +				<project.build.number>-b${env.BUILD_NUMBER}</project.build.number>
+ +				<project.fullVersion>${project.version}${project.build.number}</project.fullVersion>
+ +				<!--<project.fullVersion>${project.version}</project.fullVersion>-->
+ +			</properties>
+ +		</profile>
+  
+- 		<profile>
+- 			<id>release-sign-artifacts</id>
+- 			<activation>
+- 				<property>
+- 					<name>performRelease</name>
+- 					<value>true</value>
+- 				</property>
+- 			</activation>
+- 			<properties>
+- 				<project.fullVersion>${project.version}</project.fullVersion>
+- 			</properties>
+- 			<build>
+- 				<plugins>
+- 					<plugin>
+- 						<groupId>org.apache.maven.plugins</groupId>
+- 						<artifactId>maven-source-plugin</artifactId>
+- 						<version>3.2.1</version>
+- 						<executions>
+- 							<execution>
+- 								<id>attach-sources</id>
+- 								<goals>
+- 									<goal>jar</goal>
+- 								</goals>
+- 							</execution>
+- 						</executions>
+- 					</plugin>
++         <profile>
++             <id>release-sign-artifacts</id>
++             <activation>
++                 <property>
++                     <name>performRelease</name>
++                     <value>true</value>
++                 </property>
++             </activation>
++             <properties>
++                 <project.fullVersion>${project.version}</project.fullVersion>
++             </properties>
++             <build>
++                 <plugins>
++                     <plugin>
++                         <groupId>org.apache.maven.plugins</groupId>
++                         <artifactId>maven-source-plugin</artifactId>
++                         <version>3.2.1</version>
++                         <executions>
++                             <execution>
++                                 <id>attach-sources</id>
++                                 <goals>
++                                     <goal>jar</goal>
++                                 </goals>
++                             </execution>
++                         </executions>
++                     </plugin>
+  
+- 					<plugin>
+- 						<groupId>org.apache.maven.plugins</groupId>
+- 						<artifactId>maven-javadoc-plugin</artifactId>
+- 						<version>3.2.0</version>
+- 						<executions>
+- 							<execution>
+- 								<id>attach-javadocs</id>
+- 								<goals>
+- 									<goal>jar</goal>
+- 								</goals>
+- 							</execution>
+- 						</executions>
+- 					</plugin>
++                     <plugin>
++                         <groupId>org.apache.maven.plugins</groupId>
++                         <artifactId>maven-javadoc-plugin</artifactId>
++                         <version>3.2.0</version>
++                         <executions>
++                             <execution>
++                                 <id>attach-javadocs</id>
++                                 <goals>
++                                     <goal>jar</goal>
++                                 </goals>
++                             </execution>
++                         </executions>
++                     </plugin>
+  
+- 					<!-- TODO: Look into signing releases
+- 					<plugin>
+- 						<groupId>org.apache.maven.plugins</groupId>
+- 						<artifactId>maven-gpg-plugin</artifactId>
+- 						<version>1.6</version>
+- 						<executions>
+- 							<execution>
+- 								<id>sign-artifacts</id>
+- 								<phase>verify</phase>
+- 								<goals>
+- 									<goal>sign</goal>
+- 								</goals>
+- 							</execution>
+- 						</executions>
+- 					</plugin>
+- 					-->
++                     <!-- TODO: Look into signing releases
++                     <plugin>
++                         <groupId>org.apache.maven.plugins</groupId>
++                         <artifactId>maven-gpg-plugin</artifactId>
++                         <version>1.6</version>
++                         <executions>
++                             <execution>
++                                 <id>sign-artifacts</id>
++                                 <phase>verify</phase>
++                                 <goals>
++                                     <goal>sign</goal>
++                                 </goals>
++                             </execution>
++                         </executions>
++                     </plugin>
++                     -->
+  
+- 				</plugins>
+- 			</build>
+- 		</profile>
+- 	</profiles>
++                 </plugins>
++             </build>
++         </profile>
++     </profiles>
+  
+- 	<scm>
+- 		<connection>scm:git:git://github.com/dmulloy2/ProtocolLib.git</connection>
+- 		<developerConnection>scm:git:git@github.com:dmulloy2/ProtocolLib.git</developerConnection>
+- 		<url>https://github.com/dmulloy2/ProtocolLib</url>
+- 	</scm>
++     <scm>
++         <connection>scm:git:git://github.com/dmulloy2/ProtocolLib.git</connection>
++         <developerConnection>scm:git:git@github.com:dmulloy2/ProtocolLib.git</developerConnection>
++         <url>https://github.com/dmulloy2/ProtocolLib</url>
++     </scm>
+  
+- 	<licenses>
+- 		<license>
+- 			<name>GNU GENERAL PUBLIC LICENSE - Version 2, June 1991</name>
+- 			<url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+- 			<distribution>repo</distribution>
+- 		</license>
+- 	</licenses>
+- 
+- 	<developers>
+- 		<developer>
+- 			<id>dmulloy2</id>
+- 			<name>Dan Mulloy</name>
+- 			<url>http://dmulloy2.net/</url>
+- 			<roles>
+- 				<role>developer</role>
+- 				<role>maintainer</role>
+- 			</roles>
+- 		</developer>
+- 		<developer>
+- 			<id>aadnk</id>
+- 			<name>Kristian S. Stangeland</name>
+- 			<email>kr_stang@hotmail.com</email>
+- 			<url>http://comphenix.net/</url>
+- 			<roles>
+- 				<role>former author</role>
+- 			</roles>
+- 			<timezone>1</timezone>
+- 		</developer>
+- 	</developers>
++     <licenses>
++         <license>
++             <name>GNU GENERAL PUBLIC LICENSE - Version 2, June 1991</name>
++             <url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
++             <distribution>repo</distribution>
++         </license>
++     </licenses>
+  
++     <developers>
++         <developer>
++             <id>dmulloy2</id>
++             <name>Dan Mulloy</name>
++             <url>http://dmulloy2.net/</url>
++             <roles>
++                 <role>developer</role>
++                 <role>maintainer</role>
++             </roles>
++         </developer>
++         <developer>
++             <id>aadnk</id>
++             <name>Kristian S. Stangeland</name>
++             <email>kr_stang@hotmail.com</email>
++             <url>http://comphenix.net/</url>
++             <roles>
++                 <role>former author</role>
++             </roles>
++             <timezone>1</timezone>
++         </developer>
++     </developers>
+ -
+ -    <distributionManagement>
+ -        <repository>
+ -            <id>dmulloy2-releases</id>
+ -            <url>https://repo.dmulloy2.net/nexus/repository/releases/</url>
+ -        </repository>
+ -        <snapshotRepository>
+ -            <id>dmulloy2-snapshots</id>
+ -            <url>https://repo.dmulloy2.net/nexus/repository/snapshots/</url>
+ -        </snapshotRepository>
+ -    </distributionManagement>
+ -
+ -    <repositories>
+ -        <repository>
+ -            <id>dmulloy2-repo</id>
+ -            <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
+ -        </repository>
+ -        <repository>
+ -            <id>spigot-repo</id>
+ -            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+ -        </repository>
+ -    </repositories>
+ -
+ -    <parent>
+ -        <groupId>com.birthdates</groupId>
+ -        <artifactId>protocol-parent</artifactId>
+ -        <version>1.0.0</version>
+ -        <relativePath>../pom.xml</relativePath>
+ -    </parent>
+ -
+ +	<distributionManagement>
+ +		<repository>
+ +			<id>dmulloy2-releases</id>
+ +			<url>https://repo.dmulloy2.net/repository/releases/</url>
+ +		</repository>
+ +		<snapshotRepository>
+ +			<id>dmulloy2-snapshots</id>
+ +			<url>https://repo.dmulloy2.net/repository/snapshots/</url>
+ +		</snapshotRepository>
+ +	</distributionManagement>
+- 
+ +	<repositories>
+ +		<repository>
+ +			<id>dmulloy2-repo</id>
+ +			<url>https://repo.dmulloy2.net/repository/public/</url>
+ +		</repository>
+ +		<repository>
+ +			<id>spigot-repo</id>
+ +			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+ +		</repository>
+ +	</repositories>
+- 
+- 	<dependencies>
++     <dependencies>
++         <dependency>
++             <groupId>com.birthdates</groupId>
+ -            <artifactId>Protocol</artifactId>
+++            <artifactId>protocol</artifactId>
++             <version>1.0.0</version>
+ -        </dependency>
+ -        <!-- Compile with the old version of Netty for backwards compat -->
+ -        <dependency>
+ -            <groupId>io.netty</groupId>
+ -            <artifactId>netty-all</artifactId>
+ -            <version>4.0.23.Final</version>
+ -            <scope>provided</scope>
+ -        </dependency>
+ -        <dependency>
+ -            <groupId>org.spigotmc</groupId>
+ -            <artifactId>spigot-api</artifactId>
+ -            <version>${spigot.version}</version>
++             <scope>provided</scope>
++         </dependency>
+ -        <dependency>
+ -            <groupId>org.spigotmc</groupId>
+ -            <artifactId>spigot</artifactId>
+ -            <version>${spigot.version}</version>
+ -            <scope>provided</scope>
+ -        </dependency>
+ -        <!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy -->
+ -        <dependency>
+ -            <groupId>net.bytebuddy</groupId>
+ -            <artifactId>byte-buddy</artifactId>
+ -            <version>1.10.16</version>
+ -        </dependency>
+ +		<!-- Compile with the old version of Netty for backwards compat -->
+ +		<dependency>
+ +			<groupId>io.netty</groupId>
+ +			<artifactId>netty-all</artifactId>
+ +			<version>4.0.23.Final</version>
+ +			<scope>provided</scope>
+ +		</dependency>
+ +		<dependency>
+ +			<groupId>org.spigotmc</groupId>
+ +			<artifactId>spigot-api</artifactId>
+ +			<version>${spigot.version}</version>
+ +			<scope>provided</scope>
+ +		</dependency>
+ +		<dependency>
+ +			<groupId>org.spigotmc</groupId>
+ +			<artifactId>spigot</artifactId>
+ +			<version>${spigot.version}</version>
+ +			<scope>provided</scope>
+ +		</dependency>
+ +		<dependency>
+ +			<groupId>net.kyori</groupId>
+ +			<artifactId>adventure-text-serializer-gson</artifactId>
+ +			<version>4.5.1</version>
+ +			<scope>provided</scope>
+ +		</dependency>
+ +		<!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy -->
+ +		<dependency>
+ +			<groupId>net.bytebuddy</groupId>
+ +			<artifactId>byte-buddy</artifactId>
+ +			<version>1.10.16</version>
+ +		</dependency>
+  
+- 		<!-- Testing dependencies -->
+- 		<dependency>
+- 			<groupId>junit</groupId>
+- 			<artifactId>junit</artifactId>
+- 			<version>4.13.1</version>
+- 			<scope>test</scope>
+- 		</dependency>
+- 		<dependency>
+- 			<groupId>org.mockito</groupId>
+- 			<artifactId>mockito-core</artifactId>
+- 			<version>3.5.10</version>
+- 			<scope>test</scope>
+- 		</dependency>
+- 		<dependency>
+- 			<groupId>org.powermock</groupId>
+- 			<artifactId>powermock-module-junit4</artifactId>
+- 			<version>${powermock.version}</version>
+- 			<scope>test</scope>
+- 		</dependency>
+- 		<dependency>
+- 			<groupId>org.powermock</groupId>
+- 			<artifactId>powermock-api-mockito2</artifactId>
+- 			<version>${powermock.version}</version>
+- 			<scope>test</scope>
+- 		</dependency>
+- 	</dependencies>
+- </project>
++         <!-- Testing dependencies -->
++         <dependency>
++             <groupId>junit</groupId>
++             <artifactId>junit</artifactId>
++             <version>4.13.1</version>
++             <scope>test</scope>
++         </dependency>
++         <dependency>
++             <groupId>org.mockito</groupId>
++             <artifactId>mockito-core</artifactId>
++             <version>3.5.10</version>
++             <scope>test</scope>
++         </dependency>
++         <dependency>
++             <groupId>org.powermock</groupId>
++             <artifactId>powermock-module-junit4</artifactId>
++             <version>${powermock.version}</version>
++             <scope>test</scope>
++         </dependency>
++         <dependency>
++             <groupId>org.powermock</groupId>
++             <artifactId>powermock-api-mockito2</artifactId>
++             <version>${powermock.version}</version>
++             <scope>test</scope>
++         </dependency>
++     </dependencies>
++ </project>
+diff --git a/src/main/java/com/comphenix/protocol/ProtocolConfig.java b/src/main/java/com/comphenix/protocol/ProtocolConfig.java
+index 9f7b79ad..199e77ae 100644
+--- a/src/main/java/com/comphenix/protocol/ProtocolConfig.java
++++ b/src/main/java/com/comphenix/protocol/ProtocolConfig.java
+@@ -22,6 +22,7 @@ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Locale;
+ 
++import com.birthdates.protocol.ProtocolPlugin;
+ import org.bukkit.configuration.Configuration;
+ import org.bukkit.configuration.ConfigurationSection;
+ import org.bukkit.plugin.Plugin;
+@@ -63,6 +64,7 @@ public class ProtocolConfig {
+ 	private static final long DEFAULT_UPDATER_DELAY = 43200;
+ 
+ 	private Plugin plugin;
++	private ProtocolPlugin protocolPlugin;
+ 	private Configuration config;
+ 	private boolean loadingSections;
+ 
+@@ -77,8 +79,9 @@ public class ProtocolConfig {
+ 	// Modifications
+ 	private int modCount;
+ 
+-	public ProtocolConfig(Plugin plugin) {
++	public ProtocolConfig(Plugin plugin, ProtocolPlugin protocolPlugin) {
+ 		this.plugin = plugin;
++		this.protocolPlugin = protocolPlugin;
+ 		reloadConfig();
+ 	}
+ 
+@@ -91,7 +94,7 @@ public class ProtocolConfig {
+ 		valuesChanged = false;
+ 		modCount++;
+ 
+-		this.config = plugin.getConfig();
++		this.config = protocolPlugin.getConfig();
+ 		this.lastUpdateTime = loadLastUpdate();
+ 		loadSections(!loadingSections);
+ 	}
+@@ -214,7 +217,7 @@ public class ProtocolConfig {
+ 	 * @return Configuration file on disk.
+ 	 */
+ 	public File getFile() {
+-		return new File(plugin.getDataFolder(), "config.yml");
++		return new File(plugin.getDataFolder(), "ProtocolLib/config.yml");
+ 	}
+ 
+ 	/**
+diff --git a/src/main/java/com/comphenix/protocol/ProtocolLib.java b/src/main/java/com/comphenix/protocol/ProtocolLib.java
+index 4e5c3a48..851c516c 100644
+--- a/src/main/java/com/comphenix/protocol/ProtocolLib.java
++++ b/src/main/java/com/comphenix/protocol/ProtocolLib.java
+@@ -158,13 +158,13 @@ public class ProtocolLib extends ProtocolPlugin {
+ 		reloadConfig();
+ 
+ 		try {
+-			config = new ProtocolConfig(getPlugin());
++			config = new ProtocolConfig(getPlugin(), this);
+ 		} catch (Exception e) {
+ 			reporter.reportWarning(this, Report.newBuilder(REPORT_CANNOT_LOAD_CONFIG).error(e));
+ 
+ 			// Load it again
+ 			if (deleteConfig()) {
+-				config = new ProtocolConfig(getPlugin());
++				config = new ProtocolConfig(getPlugin(), this);
+ 			} else {
+ 				reporter.reportWarning(this, Report.newBuilder(REPORT_CANNOT_DELETE_CONFIG));
+ 			}
+@@ -554,7 +554,7 @@ public class ProtocolLib extends ProtocolPlugin {
+ 
+ 					// Check for updates too
+ 					if (!UPDATES_DISABLED && (tickCounter % 20) == 0) {
+-						checkUpdates();
++						//checkUpdates();
+ 					}
+ 				}
+ 			}, ASYNC_MANAGER_DELAY, ASYNC_MANAGER_DELAY);
+diff --git a/src/main/java/com/comphenix/protocol/metrics/Metrics.java b/src/main/java/com/comphenix/protocol/metrics/Metrics.java
+index 75222ec0..0a0e01fd 100644
+--- a/src/main/java/com/comphenix/protocol/metrics/Metrics.java
++++ b/src/main/java/com/comphenix/protocol/metrics/Metrics.java
+@@ -2,7 +2,6 @@ package com.comphenix.protocol.metrics;
+ 
+ import org.bukkit.Bukkit;
+ import org.bukkit.configuration.file.YamlConfiguration;
+-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.tuple.Pair;
+ import org.bukkit.entity.Player;
+ import org.bukkit.plugin.Plugin;
+ import org.bukkit.plugin.RegisteredServiceProvider;
+@@ -74,7 +73,7 @@ public class Metrics {
+ 
+         // Get the config file
+         File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
+-        File configFile = new File(bStatsFolder, "config.yml");
++        File configFile = new File(bStatsFolder, "ProtocolLib/config.yml");
+         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+ 
+         // Check if the config file exists
+diff --git a/src/main/java/com/comphenix/protocol/updater/BukkitUpdater.java b/src/main/java/com/comphenix/protocol/updater/BukkitUpdater.java
+index 6d203f88..6b60c990 100644
+--- a/src/main/java/com/comphenix/protocol/updater/BukkitUpdater.java
++++ b/src/main/java/com/comphenix/protocol/updater/BukkitUpdater.java
+@@ -81,7 +81,7 @@ public class BukkitUpdater extends Updater {
+         if (dataFolder != null) {
+ 	        final File pluginFile = plugin.getDataFolder().getParentFile();
+ 	        final File updaterFile = new File(pluginFile, "Updater");
+-	        final File updaterConfigFile = new File(updaterFile, "config.yml");
++	        final File updaterConfigFile = new File(updaterFile, "ProtocolLib/config.yml");
+ 
+ 	        if (!updaterFile.exists()) {
+ 	            updaterFile.mkdir();
