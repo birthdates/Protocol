@@ -1,5 +1,5 @@
 diff --git a/Plugin/pom.xml b/Plugin/pom.xml
-index 24e3ddde..dc43c2e8 100644
+index 24e3ddde..a3f9c728 100644
 --- a/Plugin/pom.xml
 +++ b/Plugin/pom.xml
 @@ -27,9 +27,20 @@
@@ -17,7 +17,7 @@ index 24e3ddde..dc43c2e8 100644
 +		<dependency>
 +			<groupId>com.birthdates</groupId>
 +			<artifactId>protocol</artifactId>
-+			<version>1.0.1-SNAPSHOT</version>
++			<version>1.0.2</version>
 +			<scope>provided</scope>
 +		</dependency>
  		<dependency>
