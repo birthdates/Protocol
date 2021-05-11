@@ -10,10 +10,19 @@
     <name>Protocol</name>
     <packaging>pom</packaging>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/birthdates/Protocol</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <defaultGoal>install</defaultGoal>
         <finalName>${project.artifactId}</finalName>
     </build>
+
     <modules>
         <module>Protocol</module>
         <module>ProtocolLib</module>
@@ -23,9 +32,6 @@
         <module>ViaRewind-Legacy-Support</module>
         <module>Floodgate</module>
         <module>HolographicDisplays</module>
-<!--
-        <module>Citizens</module>
--->
         <module>jar</module>
     </modules>
 </project>
