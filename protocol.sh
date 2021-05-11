@@ -2,13 +2,6 @@ plugins=("Floodgate" "HolographicDisplays" "ProtocolLib" "ViaBackwards" "ViaRewi
 
 function loop {
 
-	if [[ $1 -eq 1 ]]
-	then
-		echo "Removing old patches..."
-		rm -r "Patches/"
-		mkdir Patches
-	fi
-
 	for plugin in ${plugins[@]}; do
 		cd $plugin
 		pluginDir=../Patches/$plugin
@@ -38,6 +31,10 @@ case $1 in
 		loop 0
 		;;
 	"create")
+		echo "Removing old patches..."
+		rm -r "Patches/"
+		mkdir Patches
+		
 		loop 1
 		;;
 	*)
