@@ -1,8 +1,8 @@
 diff --git a/pom.xml b/pom.xml
-index 09146742..d29800fd 100644
+index 09146742..4073cb96 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -1,141 +1,142 @@
+@@ -1,141 +1,143 @@
  <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 -	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 -	<modelVersion>4.0.0</modelVersion>
@@ -37,6 +37,7 @@ index 09146742..d29800fd 100644
 +        <powermock.version>2.0.7</powermock.version>
 +        <spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
 +        <skipTests>true</skipTests>
++        <maven.deploy.skip>true</maven.deploy.skip>
 +    </properties>
  
 -	<build>
@@ -267,7 +268,7 @@ index 09146742..d29800fd 100644
  
  	<profiles>
  		<profile>
-@@ -152,105 +153,104 @@
+@@ -152,105 +154,104 @@
  			</properties>
  		</profile>
  
@@ -465,7 +466,7 @@ index 09146742..d29800fd 100644
  	<distributionManagement>
  		<repository>
  			<id>dmulloy2-releases</id>
-@@ -261,7 +261,6 @@
+@@ -261,7 +262,6 @@
  			<url>https://repo.dmulloy2.net/repository/snapshots/</url>
  		</snapshotRepository>
  	</distributionManagement>
@@ -473,7 +474,7 @@ index 09146742..d29800fd 100644
  	<repositories>
  		<repository>
  			<id>dmulloy2-repo</id>
-@@ -272,8 +271,13 @@
+@@ -272,8 +272,13 @@
  			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
  		</repository>
  	</repositories>
@@ -489,7 +490,7 @@ index 09146742..d29800fd 100644
  		<!-- Compile with the old version of Netty for backwards compat -->
  		<dependency>
  			<groupId>io.netty</groupId>
-@@ -306,30 +310,30 @@
+@@ -306,30 +311,30 @@
  			<version>1.10.16</version>
  		</dependency>
  
