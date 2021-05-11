@@ -23,8 +23,6 @@ jobs:
     - name: Build Protocol
       run: mvn --settings settings.xml clean deploy -X
       working-directory: ./Protocol/
-    - name: Go Back
-      run: cd ../jar/
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
