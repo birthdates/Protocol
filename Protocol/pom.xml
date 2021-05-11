@@ -6,7 +6,7 @@
 
     <artifactId>Protocol</artifactId>
     <name>Bukkit</name>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
