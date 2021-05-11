@@ -25,3 +25,12 @@ blacklisted-plugins: ["HolographicDisplays"]
 
 ## Other Configurations
 All supported plugins have their own folders with their files/configs in the `Protocol` folder. (i.e `ViaVersion/config.yml`)
+
+# Contributing
+When contributing, you are either changing [Protocol](https://github.com/birthdates/Protocol/tree/master/Protocol) or a patch.
+
+## How to patch
+Open a bash window in the project and type `./protocol.sh patch`
+
+## How to create patches
+Open a bash window in the project and type `./protocol.sh create`
