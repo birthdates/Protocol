@@ -5,7 +5,8 @@ function loop {
 	if [[ $1 -eq 1 ]]
 	then
 		echo "Removing old patches..."
-		rm "Patches/*"
+		rm -r "Patches/"
+		mkdir Patches
 	fi
 
 	for plugin in ${plugins[@]}; do
