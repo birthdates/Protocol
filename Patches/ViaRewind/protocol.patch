@@ -49,18 +49,10 @@ index 78ca04b..47b0fb9 100644
  	}
  
 diff --git a/pom.xml b/pom.xml
-index 1684151..3f19b13 100644
+index 1684151..e9855d2 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -26,6 +26,7 @@
-         <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
-         <maven.compiler.source>1.8</maven.compiler.source>
-         <maven.compiler.target>1.8</maven.compiler.target>
-+        <maven.deploy.skip>true</maven.deploy.skip>
-     </properties>
- 
-     <repositories>
-@@ -61,4 +62,4 @@
+@@ -61,4 +61,4 @@
          </dependency>
      </dependencies>
  

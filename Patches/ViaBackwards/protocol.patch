@@ -234,19 +234,10 @@ index d999951..57c44f1 100644
          });
  
 diff --git a/pom.xml b/pom.xml
-index 67742c3..63ee12b 100644
+index 67742c3..297e109 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -34,12 +34,18 @@
-         </developer>
-     </developers>
- 
-+    <properties>
-+        <maven.deploy.skip>true</maven.deploy.skip>
-+    </properties>
-+
-     <modules>
-         <module>core</module>
+@@ -39,7 +39,9 @@
          <module>bukkit</module>
          <module>bungee</module>
          <module>fabric</module>
@@ -256,7 +247,7 @@ index 67742c3..63ee12b 100644
          <module>velocity</module>
          <module>all</module>
      </modules>
-@@ -77,4 +83,4 @@
+@@ -77,4 +79,4 @@
              <scope>provided</scope>
          </dependency>
      </dependencies>

@@ -190,18 +190,10 @@ index a40ef76..0000000
 -# Don't exclude the .gitignore itself
 -!.gitignore
 diff --git a/pom.xml b/pom.xml
-index 955783c..c8fe3fd 100644
+index 955783c..669e559 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -16,6 +16,7 @@
-         <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
-         <maven.compiler.source>1.8</maven.compiler.source>
-         <maven.compiler.target>1.8</maven.compiler.target>
-+        <maven.deploy.skip>true</maven.deploy.skip>
-     </properties>
- 
-     <repositories>
-@@ -32,7 +33,7 @@
+@@ -32,7 +32,7 @@
      <dependencies>
          <dependency>
              <groupId>com.birthdates</groupId>

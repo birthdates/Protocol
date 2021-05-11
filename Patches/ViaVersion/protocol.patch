@@ -328,15 +328,3 @@ index b2d863f7..3325c7dd 100644
          return defaults;
      }
  
-diff --git a/pom.xml b/pom.xml
-index 08c70cbb..2cbd92b0 100644
---- a/pom.xml
-+++ b/pom.xml
-@@ -38,6 +38,7 @@
-         <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
-         <maven.compiler.source>1.8</maven.compiler.source>
-         <maven.compiler.target>1.8</maven.compiler.target>
-+        <maven.deploy.skip>true</maven.deploy.skip>
-     </properties>
- 
-     <repositories>
