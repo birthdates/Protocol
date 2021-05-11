@@ -13,12 +13,16 @@ function loop {
 		cd $plugin
 		pluginDir=../Patches/$plugin
 
+		patchFile=$pluginDir/Patch
+
 		if [[ $1 -eq 1 ]]
 		then
 			mkdir $pluginDir
-			git diff > $pluginDir/Patch
+			echo "Creating $patchFile for $plugin"
+			git diff > $patchFile
 		else
-			git apply $pluginDir/Patch
+			echo "Applying $patchFile to $plugin"
+			git apply $patchFile
 		fi
 
 		cd ".."
