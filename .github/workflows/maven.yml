@@ -23,7 +23,7 @@ jobs:
       with:
         java-version: 1.8
     - name: Deploy
-      run: mvn --settings settings.xml --batch-mode -V clean deploy -X
+      run: mvn --settings settings.xml clean deploy -X
       env:
         GITHUB_TOKEN: ${{ secrets.MAVEN_SECRET }}
     
