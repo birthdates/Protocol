@@ -1,8 +1,16 @@
 diff --git a/Plugin/pom.xml b/Plugin/pom.xml
-index 24e3ddde..2b779d4e 100644
+index 24e3ddde..595918e0 100644
 --- a/Plugin/pom.xml
 +++ b/Plugin/pom.xml
-@@ -30,6 +30,12 @@
+@@ -27,9 +27,20 @@
+ 			<id>codemc-repo</id>
+ 			<url>https://repo.codemc.io/repository/maven-public/</url>
+ 		</repository>
++
++		<repository>
++			<id>dmulloy2-repo</id>
++			<url>https://repo.dmulloy2.net/repository/public/</url>
++		</repository>
  	</repositories>
  
  	<dependencies>
@@ -264,26 +272,20 @@ index 31fd2ca4..aaa15afb 100644
  				ChatColor.GOLD,
  				ChatColor.YELLOW,
 diff --git a/pom.xml b/pom.xml
-index fdff8b83..1292aa63 100644
+index fdff8b83..31e1abb9 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -37,7 +37,14 @@
+@@ -37,7 +37,8 @@
  		<module>Plugin</module>
  		<module>Example</module>
  	</modules>
 -	
 +
-+	<repositories>
-+		<repository>
-+			<id>dmulloy2-repo</id>
-+			<url>https://repo.dmulloy2.net/repository/public/</url>
-+		</repository>
-+	</repositories>
 +
  	<dependencyManagement>
  		<dependencies>
  			<dependency>
-@@ -272,7 +279,6 @@
+@@ -272,7 +273,6 @@
  						</goals>
  						<configuration>
  							<rules>
