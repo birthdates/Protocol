@@ -20,10 +20,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Apply Patches
       run: sudo bash protocol.sh patch
-    - name: Goto Protocol
-      run: cd Protocol/
     - name: Build Protocol
       run: mvn --settings settings.xml clean deploy -X
+      working-directory: ./Protocol/
     - name: Go Back
       run: cd ../jar/
     - name: Set up JDK 1.8
@@ -32,6 +31,7 @@ jobs:
         java-version: 1.8
     - name: Deploy
       run: mvn --settings settings.xml clean deploy -X
+      working-directory: ./jar
       env:
         GITHUB_TOKEN: ${{ secrets.MAVEN_SECRET }}
     
