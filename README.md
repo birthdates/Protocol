@@ -1,6 +1,9 @@
 # Protocol
 Most of the Spigot protocol plugins in one! (ViaVersions, ProtocolLib, HolographicDisplays, e.t.c)
 
+# Downside
+The only downside of compiling all of these plugins together is that plugins that depend on them will no longer work. If they use `depend: ` in their plugin.yml you can change the plugin name from (example) `ProtocolLib` to `Protocol`. However if it's a softdepend, you will not be able to do so if they use `Bukkit.getPlugin("ProtocolLib")`
+
 # Supported Plugins
 * ProtocolLib - 4.6.1-SNAPSHOT
 * HolographicDisplays - 2.4.6
