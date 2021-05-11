@@ -10,14 +10,6 @@
     <name>Protocol</name>
     <packaging>pom</packaging>
 
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/birthdates/Protocol</url>
-        </repository>
-    </distributionManagement>
-
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
