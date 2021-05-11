@@ -1,8 +1,16 @@
 diff --git a/pom.xml b/pom.xml
-index 9dcb3cf..90b173d 100644
+index 9dcb3cf..7d10192 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -30,6 +30,12 @@
+@@ -16,6 +16,7 @@
+         <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
+         <maven.compiler.source>1.8</maven.compiler.source>
+         <maven.compiler.target>1.8</maven.compiler.target>
++        <maven.deploy.skip>true</maven.deploy.skip>
+     </properties>
+ 
+     <repositories>
+@@ -30,6 +31,12 @@
      </repositories>
  
      <dependencies>
@@ -15,7 +23,7 @@ index 9dcb3cf..90b173d 100644
          <!-- Lombok -->
          <dependency>
              <groupId>org.projectlombok</groupId>
-@@ -54,17 +60,4 @@
+@@ -54,17 +61,4 @@
              <scope>provided</scope>
          </dependency>
      </dependencies>

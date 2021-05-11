@@ -234,7 +234,7 @@ index d999951..57c44f1 100644
          });
  
 diff --git a/pom.xml b/pom.xml
-index 67742c3..297e109 100644
+index 67742c3..fa173e3 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -39,7 +39,9 @@
@@ -247,7 +247,15 @@ index 67742c3..297e109 100644
          <module>velocity</module>
          <module>all</module>
      </modules>
-@@ -77,4 +79,4 @@
+@@ -51,6 +53,7 @@
+         <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
+         <maven.compiler.source>1.8</maven.compiler.source>
+         <maven.compiler.target>1.8</maven.compiler.target>
++        <maven.deploy.skip>true</maven.deploy.skip>
+     </properties>
+ 
+     <repositories>
+@@ -77,4 +80,4 @@
              <scope>provided</scope>
          </dependency>
      </dependencies>

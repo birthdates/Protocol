@@ -94,3 +94,15 @@ index ad77124..1eaacf7 100644
  
                      KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
                      generator.initialize(2048);
+diff --git a/pom.xml b/pom.xml
+index 6e3ff3f..35c0dae 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -29,6 +29,7 @@
+         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+         <maven.compiler.source>1.8</maven.compiler.source>
+         <maven.compiler.target>1.8</maven.compiler.target>
++        <maven.deploy.skip>true</maven.deploy.skip>
+     </properties>
+ 
+     <organization>
