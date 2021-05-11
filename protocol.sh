@@ -30,6 +30,7 @@ function loop {
 case $1 in 
 
 	"patch")
+		git submodule --init
 		loop 0
 		;;
 	"create")
