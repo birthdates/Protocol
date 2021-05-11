@@ -47,16 +47,17 @@
             <version>0.9.10</version>
             <scope>compile</scope>
         </dependency>
+        <!--This adds the Spigot API artifact to the build -->
         <dependency>
-            <groupId>org.mcmayhem</groupId>
-            <artifactId>blockspigot</artifactId>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <parent>
-        <groupId>org.mcmayhem</groupId>
+        <groupId>com.birthdates</groupId>
         <artifactId>protocol-parent</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>

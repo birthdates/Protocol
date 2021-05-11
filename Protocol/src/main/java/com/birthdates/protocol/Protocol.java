@@ -1,4 +1,4 @@
-package org.mcmayhem.protocol;
+package com.birthdates.protocol;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;

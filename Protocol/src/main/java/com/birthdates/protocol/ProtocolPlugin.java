@@ -1,8 +1,9 @@
-package org.mcmayhem.protocol;
+package com.birthdates.protocol;
 
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
@@ -12,10 +13,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-public class ProtocolPlugin {
+public abstract class ProtocolPlugin {
 
     private double weight;
     private String name;
+    private YamlConfiguration configuration;
+    private File configurationFile;
+    private File dataFolder;
 
     public ProtocolPlugin() {
     }
@@ -37,7 +41,7 @@ public class ProtocolPlugin {
     }
 
     public FileConfiguration getConfig() {
-        return Protocol.getInstance().getConfig();
+        return configuration;
     }
 
     public JavaPlugin getPlugin() {
@@ -61,7 +65,7 @@ public class ProtocolPlugin {
     }
 
     public File getDataFolder() {
-        return Protocol.getInstance().getDataFolder();
+        return dataFolder;
     }
 
     public void saveConfig() {
@@ -72,20 +76,16 @@ public class ProtocolPlugin {
         return Protocol.getInstance().getPluginClassLoader();
     }
 
-    public void saveDefaultConfig() {
-        Protocol.getInstance().saveDefaultConfig();
-    }
-
     public void registerListener(Listener listener) {
         Protocol.getInstance().registerEvent(listener);
     }
 
     public void saveResource(String resourcePath, boolean replace) {
-        Protocol.getInstance().saveResource(resourcePath, replace);
+        Protocol.getInstance().saveResource(getPath() + resourcePath, replace);
     }
 
     public InputStream getResource(String filename) {
-        return Protocol.getInstance().getResource(filename);
+        return Protocol.getInstance().getResource(getPath() + filename);
     }
 
     public PluginCommand getCommand(String command) {
@@ -101,17 +101,32 @@ public class ProtocolPlugin {
 
     public void setName(String name) {
         this.name = name;
+        loadConfig();
+        this.dataFolder = new File(Protocol.getInstance().getDataFolder(), name);
+    }
+
+    private String getPath() {
+        return name + "/";
+    }
+
+    public void saveDefaultConfig() {
+        if (!configurationFile.exists()) {
+            Protocol.getInstance().saveResource(getPath() + configurationFile.getName(), false);
+        }
+    }
+
+    private void loadConfig() {
+        configurationFile = new File(Protocol.getInstance().getDataFolder(), getPath() + "config.yml");
+        saveDefaultConfig();
+        configuration = YamlConfiguration.loadConfiguration(configurationFile);
     }
 
     public Logger getLogger() {
         return Protocol.getInstance().getLogger();
     }
 
-    public void onEnable() {
-
-    }
+    public abstract void onEnable();
 
     public void onDisable() {
-
     }
 }

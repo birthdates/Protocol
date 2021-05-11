@@ -1,7 +1,7 @@
 name: Protocol
 version: 1.0.0
-authors: [MCMayhem Development Team, _MylesC, creeper123123321, Gerrygames, KennyTV, Matsv, ForceUpdate1, Comphenix, GeyserMC, filoghost]
-main: org.mcmayhem.protocol.Protocol
+authors: [birthdates, _MylesC, creeper123123321, Gerrygames, KennyTV, Matsv, ForceUpdate1, Comphenix, GeyserMC, filoghost]
+main: com.birthdates.protocol.Protocol
 load: STARTUP
 api-version: 1.13
 database: false

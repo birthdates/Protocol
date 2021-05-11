@@ -1,4 +1,4 @@
-package org.mcmayhem.protocol;
+package com.birthdates.protocol;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
