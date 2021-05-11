@@ -13,7 +13,7 @@ function loop {
 		cd $plugin
 		pluginDir=../Patches/$plugin
 
-		patchFile=$pluginDir/Patch
+		patchFile=$pluginDir/protocol.patch
 
 		if [[ $1 -eq 1 ]]
 		then
@@ -22,7 +22,7 @@ function loop {
 			git diff > $patchFile
 		else
 			echo "Applying $patchFile to $plugin"
-			git apply $patchFile
+			git apply --reject --whitespace=fix $patchFile 
 		fi
 
 		cd ".."
