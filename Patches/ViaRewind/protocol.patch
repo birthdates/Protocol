@@ -1,5 +1,5 @@
 diff --git a/bukkit/pom.xml b/bukkit/pom.xml
-index e3a6008..c6489bf 100644
+index e3a6008..8158003 100644
 --- a/bukkit/pom.xml
 +++ b/bukkit/pom.xml
 @@ -20,6 +20,12 @@
@@ -9,7 +9,7 @@ index e3a6008..c6489bf 100644
 +        <dependency>
 +            <artifactId>protocol</artifactId>
 +            <groupId>com.birthdates</groupId>
-+            <version>1.0.2</version>
++            <version>1.0.3</version>
 +            <scope>provided</scope>
 +        </dependency>
          <!-- Spigot API -->

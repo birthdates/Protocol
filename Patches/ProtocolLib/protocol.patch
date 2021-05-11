@@ -1,5 +1,5 @@
 diff --git a/pom.xml b/pom.xml
-index 09146742..f2911e50 100644
+index 09146742..2d3756ac 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,141 +1,143 @@
@@ -484,7 +484,7 @@ index 09146742..f2911e50 100644
 +        <dependency>
 +            <groupId>com.birthdates</groupId>
 +            <artifactId>protocol</artifactId>
-+            <version>1.0.2</version>
++            <version>1.0.3</version>
 +            <scope>provided</scope>
 +        </dependency>
  		<!-- Compile with the old version of Netty for backwards compat -->

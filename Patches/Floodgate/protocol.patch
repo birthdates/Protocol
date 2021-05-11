@@ -1,5 +1,5 @@
 diff --git a/bukkit/pom.xml b/bukkit/pom.xml
-index 88aa979..5ae5268 100644
+index 88aa979..89c91f4 100644
 --- a/bukkit/pom.xml
 +++ b/bukkit/pom.xml
 @@ -23,6 +23,12 @@
@@ -9,7 +9,7 @@ index 88aa979..5ae5268 100644
 +        <dependency>
 +            <groupId>com.birthdates</groupId>
 +            <artifactId>protocol</artifactId>
-+            <version>1.0.2</version>
++            <version>1.0.3</version>
 +            <scope>provided</scope>
 +        </dependency>
          <dependency>
