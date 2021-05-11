@@ -190,7 +190,7 @@ index a40ef76..0000000
 -# Don't exclude the .gitignore itself
 -!.gitignore
 diff --git a/pom.xml b/pom.xml
-index 955783c..669e559 100644
+index 955783c..15cc19b 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -32,7 +32,7 @@
@@ -202,6 +202,16 @@ index 955783c..669e559 100644
              <version>1.0.0</version>
              <scope>provided</scope>
          </dependency>
+@@ -51,7 +51,8 @@
+             <version>3.3.0-21w15a</version>
+             <scope>provided</scope>
+         </dependency>
+-        <!--This adds the Spigot API artifact to the build -->
++
++        <!-- Spigot API -->
+         <dependency>
+             <groupId>org.spigotmc</groupId>
+             <artifactId>spigot-api</artifactId>
 diff --git a/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin$1.class b/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin$1.class
 index 8424984..0740d3a 100644
 Binary files a/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin$1.class and b/target/classes/de/gerrygames/viarewind/legacysupport/BukkitPlugin$1.class differ
