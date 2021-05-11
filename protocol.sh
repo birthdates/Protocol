@@ -10,13 +10,11 @@ function loop {
 
 	for plugin in ${plugins[@]}; do
 		cd $plugin
-
 		pluginDir=../Patches/$plugin
-
-		mkdir $pluginDir
 
 		if [[ $1 -eq 1 ]]
 		then
+			mkdir $pluginDir
 			git diff > $pluginDir/Patch
 		else
 			git apply $pluginDir/Patch
