@@ -328,3 +328,351 @@ index b2d863f7..3325c7dd 100644
          return defaults;
      }
  
+diff --git a/patches/Release b/patches/Release
+new file mode 100644
+index 00000000..4c60f830
+--- /dev/null
++++ b/patches/Release
+@@ -0,0 +1,342 @@
++diff --git a/bukkit/pom.xml b/bukkit/pom.xml
++index 07e8b0dc..f09e837a 100644
++--- a/bukkit/pom.xml
+++++ b/bukkit/pom.xml
++@@ -30,6 +30,12 @@
++     </build>
++ 
++     <dependencies>
+++        <dependency>
+++            <groupId>com.birthdates</groupId>
+++            <artifactId>protocol</artifactId>
+++            <version>1.0.0</version>
+++            <scope>provided</scope>
+++        </dependency>
++         <!-- Common Module -->
++         <dependency>
++             <groupId>us.myles</groupId>
++diff --git a/bukkit/src/main/java/us/myles/ViaVersion/ViaVersionPlugin.java b/bukkit/src/main/java/us/myles/ViaVersion/ViaVersionPlugin.java
++index d05c19ce..90eb91fd 100644
++--- a/bukkit/src/main/java/us/myles/ViaVersion/ViaVersionPlugin.java
+++++ b/bukkit/src/main/java/us/myles/ViaVersion/ViaVersionPlugin.java
++@@ -5,7 +5,8 @@ import org.bukkit.Bukkit;
++ import org.bukkit.ChatColor;
++ import org.bukkit.entity.Player;
++ import org.bukkit.plugin.Plugin;
++-import org.bukkit.plugin.java.JavaPlugin;
+++import com.birthdates.protocol.ProtocolPlugin;
+++import com.birthdates.protocol.UsePlugin;
++ import us.myles.ViaVersion.api.Via;
++ import us.myles.ViaVersion.api.ViaAPI;
++ import us.myles.ViaVersion.api.command.ViaCommandSender;
++@@ -31,7 +32,8 @@ import java.util.ArrayList;
++ import java.util.List;
++ import java.util.UUID;
++ 
++-public class ViaVersionPlugin extends JavaPlugin implements ViaPlatform<Player> {
+++@UsePlugin(name = "ViaVersion", weight = 1F)
+++public class ViaVersionPlugin extends ProtocolPlugin implements ViaPlatform<Player> {
++     private static ViaVersionPlugin instance;
++     private final ViaConnectionManager connectionManager = new ViaConnectionManager();
++     private final BukkitCommandHandler commandHandler;
++@@ -57,7 +59,7 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaPlatform<Player>
++                 .platform(this)
++                 .commandHandler(commandHandler)
++                 .injector(injector)
++-                .loader(new BukkitViaLoader(this))
+++                .loader(new BukkitViaLoader(this.getPlugin()))
++                 .build());
++ 
++         // Config magic
++@@ -119,7 +121,7 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaPlatform<Player>
++         getCommand("viaversion").setExecutor(commandHandler);
++         getCommand("viaversion").setTabCompleter(commandHandler);
++ 
++-        getServer().getPluginManager().registerEvents(new ProtocolLibEnableListener(), this);
+++        registerListener(new ProtocolLibEnableListener());
++ 
++         // Warn them if they have anti-xray on and they aren't using spigot
++         if (conf.isAntiXRay() && !spigot) {
++@@ -128,13 +130,13 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaPlatform<Player>
++ 
++         // Run queued tasks
++         for (Runnable r : queuedTasks) {
++-            Bukkit.getScheduler().runTask(this, r);
+++            Bukkit.getScheduler().runTask(this.getPlugin(), r);
++         }
++         queuedTasks.clear();
++ 
++         // Run async queued tasks
++         for (Runnable r : asyncQueuedTasks) {
++-            Bukkit.getScheduler().runTaskAsynchronously(this, r);
+++            Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), r);
++         }
++         asyncQueuedTasks.clear();
++     }
++@@ -162,7 +164,7 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaPlatform<Player>
++     @Override
++     public TaskId runAsync(Runnable runnable) {
++         if (isPluginEnabled()) {
++-            return new BukkitTaskId(getServer().getScheduler().runTaskAsynchronously(this, runnable).getTaskId());
+++            return new BukkitTaskId(getServer().getScheduler().runTaskAsynchronously(getPlugin(), runnable).getTaskId());
++         } else {
++             asyncQueuedTasks.add(runnable);
++             return new BukkitTaskId(null);
++@@ -172,7 +174,7 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaPlatform<Player>
++     @Override
++     public TaskId runSync(Runnable runnable) {
++         if (isPluginEnabled()) {
++-            return new BukkitTaskId(getServer().getScheduler().runTask(this, runnable).getTaskId());
+++            return new BukkitTaskId(getServer().getScheduler().runTask(getPlugin(), runnable).getTaskId());
++         } else {
++             queuedTasks.add(runnable);
++             return new BukkitTaskId(null);
++@@ -181,12 +183,12 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaPlatform<Player>
++ 
++     @Override
++     public TaskId runSync(Runnable runnable, Long ticks) {
++-        return new BukkitTaskId(getServer().getScheduler().runTaskLater(this, runnable, ticks).getTaskId());
+++        return new BukkitTaskId(getServer().getScheduler().runTaskLater(getPlugin(), runnable, ticks).getTaskId());
++     }
++ 
++     @Override
++     public TaskId runRepeatingSync(Runnable runnable, Long ticks) {
++-        return new BukkitTaskId(getServer().getScheduler().runTaskTimer(this, runnable, 0, ticks).getTaskId());
+++        return new BukkitTaskId(getServer().getScheduler().runTaskTimer(getPlugin(), runnable, 0, ticks).getTaskId());
++     }
++ 
++     @Override
++@@ -229,7 +231,7 @@ public class ViaVersionPlugin extends JavaPlugin implements ViaPlatform<Player>
++ 
++     @Override
++     public boolean isPluginEnabled() {
++-        return Bukkit.getPluginManager().getPlugin("ViaVersion").isEnabled();
+++        return Bukkit.getPluginManager().getPlugin("Protocol").isEnabled();
++     }
++ 
++     @Override
++diff --git a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/classgenerator/ClassGenerator.java b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/classgenerator/ClassGenerator.java
++index ecd17a0e..af62b5c9 100644
++--- a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/classgenerator/ClassGenerator.java
+++++ b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/classgenerator/ClassGenerator.java
++@@ -246,7 +246,7 @@ public class ClassGenerator {
++                             e.printStackTrace();
++                         }
++                     }
++-                }, plugin);
+++                }, plugin.getPlugin());
++             } catch (Exception e) {
++                 e.printStackTrace();
++             }
++diff --git a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/listeners/multiversion/PlayerSneakListener.java b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/listeners/multiversion/PlayerSneakListener.java
++index f457fadb..4987eb55 100644
++--- a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/listeners/multiversion/PlayerSneakListener.java
+++++ b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/listeners/multiversion/PlayerSneakListener.java
++@@ -33,7 +33,7 @@ public class PlayerSneakListener extends ViaBukkitListener {
++     private boolean useCache;
++ 
++     public PlayerSneakListener(ViaVersionPlugin plugin, boolean is1_9Fix, boolean is1_14Fix) throws ReflectiveOperationException {
++-        super(plugin, null);
+++        super(plugin.getPlugin(), null);
++         this.is1_9Fix = is1_9Fix;
++         this.is1_14Fix = is1_14Fix;
++ 
++@@ -54,7 +54,7 @@ public class PlayerSneakListener extends ViaBukkitListener {
++         if (ProtocolRegistry.SERVER_PROTOCOL >= ProtocolVersion.v1_9.getVersion()) {
++             sneaking = new WeakHashMap<>();
++             useCache = true;
++-            plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable() {
+++            plugin.getServer().getScheduler().runTaskTimer(plugin.getPlugin(), new Runnable() {
++                 @Override
++                 public void run() {
++                     for (Map.Entry<Player, Boolean> entry : sneaking.entrySet()) {
++diff --git a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/listeners/protocol1_15to1_14_4/EntityToggleGlideListener.java b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/listeners/protocol1_15to1_14_4/EntityToggleGlideListener.java
++index bb290ee5..895b0f98 100644
++--- a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/listeners/protocol1_15to1_14_4/EntityToggleGlideListener.java
+++++ b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/listeners/protocol1_15to1_14_4/EntityToggleGlideListener.java
++@@ -21,7 +21,7 @@ public class EntityToggleGlideListener extends ViaBukkitListener {
++     private boolean swimmingMethodExists;
++ 
++     public EntityToggleGlideListener(ViaVersionPlugin plugin) {
++-        super(plugin, Protocol1_15To1_14_4.class);
+++        super(plugin.getPlugin(), Protocol1_15To1_14_4.class);
++         try {
++             Player.class.getMethod("isSwimming");
++             swimmingMethodExists = true;
++diff --git a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/platform/BukkitViaConfig.java b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/platform/BukkitViaConfig.java
++index febaded6..3935ce05 100644
++--- a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/platform/BukkitViaConfig.java
+++++ b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/platform/BukkitViaConfig.java
++@@ -2,6 +2,7 @@ package us.myles.ViaVersion.bukkit.platform;
++ 
++ import org.bukkit.plugin.Plugin;
++ import us.myles.ViaVersion.AbstractViaConfig;
+++import us.myles.ViaVersion.ViaVersionPlugin;
++ import us.myles.ViaVersion.api.Via;
++ 
++ import java.io.File;
++@@ -19,7 +20,7 @@ public class BukkitViaConfig extends AbstractViaConfig {
++     private String blockConnectionMethod;
++ 
++     public BukkitViaConfig() {
++-        super(new File(((Plugin) Via.getPlatform()).getDataFolder(), "config.yml"));
+++        super(new File(ViaVersionPlugin.getInstance().getPlugin().getDataFolder(), "config.yml"));
++         reloadConfig();
++     }
++ 
++diff --git a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/platform/BukkitViaLoader.java b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/platform/BukkitViaLoader.java
++index d20ca655..3a035f18 100644
++--- a/bukkit/src/main/java/us/myles/ViaVersion/bukkit/platform/BukkitViaLoader.java
+++++ b/bukkit/src/main/java/us/myles/ViaVersion/bukkit/platform/BukkitViaLoader.java
++@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
++ import org.bukkit.entity.Player;
++ import org.bukkit.event.HandlerList;
++ import org.bukkit.event.Listener;
+++import org.bukkit.plugin.java.JavaPlugin;
++ import org.bukkit.scheduler.BukkitTask;
++ import us.myles.ViaVersion.ViaVersionPlugin;
++ import us.myles.ViaVersion.api.Via;
++@@ -39,14 +40,14 @@ import java.util.UUID;
++ import java.util.concurrent.TimeUnit;
++ 
++ public class BukkitViaLoader implements ViaPlatformLoader {
++-    private final ViaVersionPlugin plugin;
+++    private final JavaPlugin plugin;
++ 
++     private final Set<Listener> listeners = new HashSet<>();
++     private final Set<BukkitTask> tasks = new HashSet<>();
++ 
++     private HandItemCache handItemCache;
++ 
++-    public BukkitViaLoader(ViaVersionPlugin plugin) {
+++    public BukkitViaLoader(JavaPlugin plugin) {
++         this.plugin = plugin;
++     }
++ 
++@@ -65,20 +66,20 @@ public class BukkitViaLoader implements ViaPlatformLoader {
++         registerListener(new UpdateListener());
++ 
++         /* Base Protocol */
++-        final ViaVersionPlugin plugin = (ViaVersionPlugin) Bukkit.getPluginManager().getPlugin("ViaVersion");
+++        final ViaVersionPlugin plugin = ViaVersionPlugin.getInstance();
++ 
++-        // Add ProtocolSupport ConnectListener if necessary.
+++        // Add ProtocolSupport ConnectListener i f necessary.
++         ClassGenerator.registerPSConnectListener(plugin);
++ 
++         /* 1.9 client to 1.8 server */
++         if (ProtocolRegistry.SERVER_PROTOCOL < ProtocolVersion.v1_9.getVersion()) {
++-            storeListener(new ArmorListener(plugin)).register();
++-            storeListener(new DeathListener(plugin)).register();
++-            storeListener(new BlockListener(plugin)).register();
+++            storeListener(new ArmorListener(plugin.getPlugin())).register();
+++            storeListener(new DeathListener(plugin.getPlugin())).register();
+++            storeListener(new BlockListener(plugin.getPlugin())).register();
++ 
++             if (plugin.getConf().isItemCache()) {
++                 handItemCache = new HandItemCache();
++-                tasks.add(handItemCache.runTaskTimerAsynchronously(plugin, 2L, 2L)); // Updates player's items :)
+++                tasks.add(handItemCache.runTaskTimerAsynchronously(plugin.getPlugin(), 2L, 2L)); // Updates player's items :)
++             }
++         }
++ 
++@@ -107,7 +108,7 @@ public class BukkitViaLoader implements ViaPlatformLoader {
++                 || Bukkit.getVersion().toLowerCase(Locale.ROOT).contains("torch"))
++                 && ProtocolRegistry.SERVER_PROTOCOL < ProtocolVersion.v1_12.getVersion()) {
++             plugin.getLogger().info("Enabling Paper/TacoSpigot/Torch patch: Fixes block placement.");
++-            storeListener(new PaperPatch(plugin)).register();
+++            storeListener(new PaperPatch(plugin.getPlugin())).register();
++         }
++ 
++         /* Providers */
++diff --git a/common/src/main/java/us/myles/ViaVersion/protocols/protocol1_13to1_12_2/data/MappingData.java b/common/src/main/java/us/myles/ViaVersion/protocols/protocol1_13to1_12_2/data/MappingData.java
++index 97fa88eb..f7a41d36 100644
++--- a/common/src/main/java/us/myles/ViaVersion/protocols/protocol1_13to1_12_2/data/MappingData.java
+++++ b/common/src/main/java/us/myles/ViaVersion/protocols/protocol1_13to1_12_2/data/MappingData.java
++@@ -116,10 +116,9 @@ public class MappingData extends us.myles.ViaVersion.api.data.MappingData {
++ 
++     public static String validateNewChannel(String newId) {
++         if (!isValid1_13Channel(newId)) {
++-            return null; // Not valid
+++            return null;
++         }
++-        int separatorIndex = newId.indexOf(':');
++-        // Vanilla parses ``:`` and ```` as ``minecraft:`` (also ensure there's enough space)
+++        final int separatorIndex = newId.indexOf(58);
++         if ((separatorIndex == -1 || separatorIndex == 0) && newId.length() <= 10) {
++             newId = "minecraft:" + newId;
++         }
++@@ -127,7 +126,7 @@ public class MappingData extends us.myles.ViaVersion.api.data.MappingData {
++     }
++ 
++     public static boolean isValid1_13Channel(String channelId) {
++-        return channelId.matches("([0-9a-z_.-]+):([0-9a-z_/.-]+)");
+++        return true;
++     }
++ 
++     private void loadTags(Map<String, Integer[]> output, JsonObject newTags) {
++diff --git a/common/src/main/java/us/myles/ViaVersion/update/UpdateUtil.java b/common/src/main/java/us/myles/ViaVersion/update/UpdateUtil.java
++index dae27fa7..c01d84a4 100644
++--- a/common/src/main/java/us/myles/ViaVersion/update/UpdateUtil.java
+++++ b/common/src/main/java/us/myles/ViaVersion/update/UpdateUtil.java
++@@ -43,34 +43,7 @@ public class UpdateUtil {
++ 
++     @Nullable
++     private static String getUpdateMessage(boolean console) {
++-        if (Via.getPlatform().getPluginVersion().equals("${project.version}")) {
++-            return "You are using a debug/custom version, consider updating.";
++-        }
++-        String newestString = getNewestVersion();
++-        if (newestString == null) {
++-            if (console) {
++-                return "Could not check for updates, check your connection.";
++-            } else {
++-                return null;
++-            }
++-        }
++-        Version current;
++-        try {
++-            current = new Version(Via.getPlatform().getPluginVersion());
++-        } catch (IllegalArgumentException e) {
++-            return "You are using a custom version, consider updating.";
++-        }
++-        Version newest = new Version(newestString);
++-        if (current.compareTo(newest) < 0)
++-            return "There is a newer version available: " + newest.toString() + ", you're on: " + current.toString();
++-        else if (console && current.compareTo(newest) != 0) {
++-            if (current.getTag().toLowerCase(Locale.ROOT).startsWith("dev") || current.getTag().toLowerCase(Locale.ROOT).startsWith("snapshot")) {
++-                return "You are running a development version, please report any bugs to GitHub.";
++-            } else {
++-                return "You are running a newer version than is released!";
++-            }
++-        }
++-        return null;
+++        return "You are running a development version, please report any bugs to GitHub.";
++     }
++ 
++     @Nullable
++diff --git a/common/src/main/java/us/myles/ViaVersion/util/Config.java b/common/src/main/java/us/myles/ViaVersion/util/Config.java
++index b2d863f7..3325c7dd 100644
++--- a/common/src/main/java/us/myles/ViaVersion/util/Config.java
+++++ b/common/src/main/java/us/myles/ViaVersion/util/Config.java
++@@ -86,8 +86,6 @@ public abstract class Config implements ConfigurationProvider {
++         // Call Handler
++         handleConfig(defaults);
++         // Save
++-        saveConfig(location, defaults);
++-
++         return defaults;
++     }
++ 
++diff --git a/pom.xml b/pom.xml
++index 08c70cbb..2cbd92b0 100644
++--- a/pom.xml
+++++ b/pom.xml
++@@ -38,6 +38,7 @@
++         <project.build.outputEncoding>${projectEncoding}</project.build.outputEncoding>
++         <maven.compiler.source>1.8</maven.compiler.source>
++         <maven.compiler.target>1.8</maven.compiler.target>
+++        <maven.deploy.skip>true</maven.deploy.skip>
++     </properties>
++ 
++     <repositories>

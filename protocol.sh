@@ -19,7 +19,7 @@ function loop {
 		then
 			mkdir $pluginDir
 			echo "Creating $patchFile for $plugin"
-			git diff > $patchFile
+			git diff master > $patchFile
 		else
 			echo "Applying $patchFile to $plugin"
 			git apply --reject --whitespace=fix $patchFile 
