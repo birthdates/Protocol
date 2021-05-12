@@ -1,5 +1,5 @@
 diff --git a/Config/pom.xml b/Config/pom.xml
-index b4c5a7b6..f9663b6b 100644
+index b4c5a7b6..6d4686bb 100644
 --- a/Config/pom.xml
 +++ b/Config/pom.xml
 @@ -20,6 +20,12 @@
@@ -44,7 +44,7 @@ index 3da4c4d4..91f2c9ac 100644
  		
  		List<String> lines;
 diff --git a/Plugin/pom.xml b/Plugin/pom.xml
-index 24e3ddde..e97468ec 100644
+index 24e3ddde..9535459e 100644
 --- a/Plugin/pom.xml
 +++ b/Plugin/pom.xml
 @@ -27,6 +27,11 @@

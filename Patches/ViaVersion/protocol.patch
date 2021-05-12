@@ -1,5 +1,5 @@
 diff --git a/bukkit/pom.xml b/bukkit/pom.xml
-index 07e8b0dc..7cf400fd 100644
+index 07e8b0dc..82d05d68 100644
 --- a/bukkit/pom.xml
 +++ b/bukkit/pom.xml
 @@ -30,6 +30,12 @@
