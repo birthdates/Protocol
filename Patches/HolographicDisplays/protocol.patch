@@ -9,7 +9,7 @@ index b4c5a7b6..f9663b6b 100644
 +		<dependency>
 +			<groupId>com.birthdates</groupId>
 +			<artifactId>protocol</artifactId>
-+			<version>1.0.6</version>
++			<version>1.0.7</version>
 +			<scope>provided</scope>
 +		</dependency>
  		<dependency>
@@ -67,7 +67,7 @@ index 24e3ddde..e97468ec 100644
 +		<dependency>
 +			<groupId>com.birthdates</groupId>
 +			<artifactId>protocol</artifactId>
-+			<version>1.0.6</version>
++			<version>1.0.7</version>
 +			<scope>provided</scope>
 +		</dependency>
  		<dependency>

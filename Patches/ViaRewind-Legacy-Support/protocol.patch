@@ -17,7 +17,7 @@ index 9dcb3cf..572e3c7 100644
 +        <dependency>
 +            <groupId>com.birthdates</groupId>
 +            <artifactId>protocol</artifactId>
-+            <version>1.0.6</version>
++            <version>1.0.7</version>
 +            <scope>provided</scope>
 +        </dependency>
          <!-- Lombok -->
