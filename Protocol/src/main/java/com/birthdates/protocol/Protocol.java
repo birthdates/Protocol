@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class Protocol extends JavaPlugin {
@@ -24,7 +25,7 @@ public class Protocol extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         registerPlugins();
-        loadPlugins();
+        pluginsAction("Loading", "Loaded", ProtocolPlugin::onLoad);
     }
 
     private void registerPlugins() {
@@ -50,27 +51,21 @@ public class Protocol extends JavaPlugin {
                 exception.printStackTrace();
             }
         }
+        plugins.sort(Comparator.comparingDouble(ProtocolPlugin::getWeight));
     }
 
-    private void loadPlugins() {
-        log("Loading a total of " + plugins.size() + " plugins...");
-        plugins.sort(Comparator.comparingDouble(ProtocolPlugin::getWeight));
+    private void pluginsAction(String preAction, String action, Consumer<ProtocolPlugin> callback) {
+        log(preAction + " a total of " + plugins.size() + " plugins...");
         plugins.forEach((plugin) -> {
-            log("Loading " + plugin.getName() + "...");
-            plugin.onLoad();
-            log("Loaded " + plugin.getName() + ".");
+            log(preAction + " " + plugin.getName() + "...");
+            callback.accept(plugin);
+            log(action + " " + plugin.getName() + ".");
         });
-        log("Loaded a total of " + plugins.size() + " plugins.");
+        log(action + " a total of " + plugins.size() + " plugins.");
     }
 
     public void onEnable() {
-        log("Enabling a total of " + plugins.size() + " plugins...");
-        plugins.forEach((plugin) -> {
-            log("Enabling " + plugin.getName() + "...");
-            plugin.onEnable();
-            log("Enabled " + plugin.getName() + ".");
-        });
-        log("Enabled a total of " + plugins.size() + " plugins.");
+        pluginsAction("Enabling", "Enabled", ProtocolPlugin::onEnable);
     }
 
     public void registerEvent(Listener listener) {
