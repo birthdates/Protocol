@@ -24,16 +24,22 @@ public class Protocol extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         Reflections reflections = new Reflections();
+        List<String> blacklistedPlugins = getConfig().getStringList("blacklisted-plugins");
         for (Class<?> aClass : reflections.getTypesAnnotatedWith(UsePlugin.class)) {
             if (!ProtocolPlugin.class.isAssignableFrom(aClass)) {
+                continue;
+            }
+            UsePlugin usePlugin = aClass.getAnnotation(UsePlugin.class);
+            String name = usePlugin.name();
+            if(blacklistedPlugins.contains(name)) {
+                log("Skipping " + name + ".");
                 continue;
             }
             try {
                 ProtocolPlugin plugin = (ProtocolPlugin) aClass.newInstance();
                 plugins.add(plugin);
-                UsePlugin usePlugin = aClass.getAnnotation(UsePlugin.class);
                 plugin.setWeight(usePlugin.weight());
-                plugin.setName(usePlugin.name());
+                plugin.setName(name);
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }

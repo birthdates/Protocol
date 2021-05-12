@@ -9,7 +9,7 @@ index e3a6008..573f1e0 100644
 +        <dependency>
 +            <groupId>com.birthdates</groupId>
 +            <artifactId>protocol</artifactId>
-+            <version>1.0.6</version>
++            <version>1.0.7</version>
 +            <scope>provided</scope>
 +        </dependency>
          <!-- Spigot API -->

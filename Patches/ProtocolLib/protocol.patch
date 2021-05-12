@@ -484,7 +484,7 @@ index 09146742..9630675e 100644
 +        <dependency>
 +            <groupId>com.birthdates</groupId>
 +            <artifactId>protocol</artifactId>
-+            <version>1.0.6</version>
++            <version>1.0.7</version>
 +            <scope>provided</scope>
 +        </dependency>
  		<!-- Compile with the old version of Netty for backwards compat -->

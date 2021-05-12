@@ -9,7 +9,7 @@ index b4c5a7b6..f9663b6b 100644
 +		<dependency>
 +			<groupId>com.birthdates</groupId>
 +			<artifactId>protocol</artifactId>
-+			<version>1.0.6</version>
++			<version>1.0.7</version>
 +			<scope>provided</scope>
 +		</dependency>
  		<dependency>
@@ -67,7 +67,7 @@ index 24e3ddde..e97468ec 100644
 +		<dependency>
 +			<groupId>com.birthdates</groupId>
 +			<artifactId>protocol</artifactId>
-+			<version>1.0.6</version>
++			<version>1.0.7</version>
 +			<scope>provided</scope>
 +		</dependency>
  		<dependency>
@@ -85,7 +85,7 @@ index 24e3ddde..e97468ec 100644
  
  		<dependency>
 diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/HolographicDisplays.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/HolographicDisplays.java
-index 318fe487..655a6182 100644
+index 318fe487..3a96e346 100644
 --- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/HolographicDisplays.java
 +++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/HolographicDisplays.java
 @@ -22,7 +22,6 @@ import java.util.regex.Pattern;
@@ -140,7 +140,7 @@ index 318fe487..655a6182 100644
 +		PlaceholdersManager.load(getPlugin());
  		try {
 -			AnimationsRegister.loadAnimations(this);
-+			AnimationsRegister.loadAnimations(getPlugin());
++			AnimationsRegister.loadAnimations(getPlugin(), this);
  		} catch (Exception ex) {
  			ConsoleLogger.log(Level.WARNING, "Failed to load animation files!", ex);
  		}
@@ -233,7 +233,7 @@ index 71f1c0ec..2e9a0c64 100644
  					for (Entry<String, ServerAddress> entry : Configuration.pingerServers.entrySet()) {
  						BungeeServerInfo serverInfo = getOrCreateServerInfo(entry.getKey());
 diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/commands/main/subs/ReloadCommand.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/commands/main/subs/ReloadCommand.java
-index e6b30099..0123cc00 100644
+index e6b30099..933cd2b0 100644
 --- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/commands/main/subs/ReloadCommand.java
 +++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/commands/main/subs/ReloadCommand.java
 @@ -64,14 +64,14 @@ public class ReloadCommand extends HologramSubCommand {
@@ -251,7 +251,7 @@ index e6b30099..0123cc00 100644
 -			HologramDatabase.loadYamlFile(HolographicDisplays.getInstance());
 -			AnimationsRegister.loadAnimations(HolographicDisplays.getInstance());
 +			HologramDatabase.loadYamlFile(HolographicDisplays.getInstance().getPlugin(), HolographicDisplays.getInstance());
-+			AnimationsRegister.loadAnimations(HolographicDisplays.getInstance().getPlugin());
++			AnimationsRegister.loadAnimations(HolographicDisplays.getInstance().getPlugin(), HolographicDisplays.getInstance());
  			
  			PlaceholdersManager.untrackAll();
  			NamedHologramManager.clearAll();
@@ -314,10 +314,34 @@ index f12e3f02..8b1de128 100644
  		}
  	}
 diff --git a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/AnimationsRegister.java b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/AnimationsRegister.java
-index 4bd21df9..412ff6a2 100644
+index 4bd21df9..ed3f0b85 100644
 --- a/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/AnimationsRegister.java
 +++ b/Plugin/src/main/java/com/gmail/filoghost/holographicdisplays/placeholder/AnimationsRegister.java
-@@ -81,7 +81,7 @@ public class AnimationsRegister {
+@@ -26,19 +26,20 @@ import com.gmail.filoghost.holographicdisplays.HolographicDisplays;
+ import com.gmail.filoghost.holographicdisplays.disk.StringConverter;
+ import com.gmail.filoghost.holographicdisplays.util.ConsoleLogger;
+ import com.gmail.filoghost.holographicdisplays.util.FileUtils;
++import com.birthdates.protocol.ProtocolPlugin;
+ 
+ public class AnimationsRegister {
+ 	
+ 	// <fileName, lines>
+ 	private final static Map<String, Placeholder> animations = new HashMap<>();
+ 	
+-	public static void loadAnimations(Plugin plugin) {
++	public static void loadAnimations(Plugin plugin, ProtocolPlugin protocolPlugin) {
+ 		animations.clear();
+ 		
+-		File animationFolder = new File(plugin.getDataFolder(), "animations");
++		File animationFolder = new File(protocolPlugin.getDataFolder(), "animations");
+ 		if (!animationFolder.isDirectory()) {
+ 			animationFolder.mkdirs();
+-			plugin.saveResource("animations/example.txt", false);
++			protocolPlugin.saveResource("animations/example.txt", false);
+ 			return;
+ 		}
+ 		
+@@ -81,7 +82,7 @@ public class AnimationsRegister {
  					lines.set(i, StringConverter.toReadableFormat(lines.get(i)));
  				}
  				

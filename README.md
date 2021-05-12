@@ -35,5 +35,7 @@ When contributing, you are either changing [Protocol](https://github.com/birthda
 ## How to patch
 Open a bash window in the project and type `./protocol.sh patch`
 
+To build the project after this, type `mvn clean install`
+
 ## How to create patches
 Open a bash window in the project and type `./protocol.sh create`
