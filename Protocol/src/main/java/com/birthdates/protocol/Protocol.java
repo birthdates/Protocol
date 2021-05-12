@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class Protocol extends JavaPlugin {
@@ -23,45 +24,48 @@ public class Protocol extends JavaPlugin {
     public void onLoad() {
         instance = this;
         saveDefaultConfig();
+        registerPlugins();
+        pluginsAction("Loading", "Loaded", ProtocolPlugin::onLoad);
+    }
+
+    private void registerPlugins() {
         Reflections reflections = new Reflections();
         List<String> blacklistedPlugins = getConfig().getStringList("blacklisted-plugins");
+
         for (Class<?> aClass : reflections.getTypesAnnotatedWith(UsePlugin.class)) {
-            if (!ProtocolPlugin.class.isAssignableFrom(aClass)) {
+            if (!ProtocolPlugin.class.isAssignableFrom(aClass)) { //somehow if class is not a protocol plugin but uses the annotation
                 continue;
             }
             UsePlugin usePlugin = aClass.getAnnotation(UsePlugin.class);
             String name = usePlugin.name();
-            if(blacklistedPlugins.contains(name)) {
-                log("Skipping " + name + ".");
+            if (blacklistedPlugins.contains(name)) {
+                log("Skipping " + name + "."); //blacklisted plugin
                 continue;
             }
             try {
-                ProtocolPlugin plugin = (ProtocolPlugin) aClass.newInstance();
+                ProtocolPlugin plugin = (ProtocolPlugin) aClass.newInstance(); //create new instance of this plugin (init later)
                 plugins.add(plugin);
                 plugin.setWeight(usePlugin.weight());
                 plugin.setName(name);
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+            } catch (InstantiationException | IllegalAccessException exception) {
+                exception.printStackTrace();
             }
         }
-        log("Loading a total of " + plugins.size() + " plugins...");
         plugins.sort(Comparator.comparingDouble(ProtocolPlugin::getWeight));
+    }
+
+    private void pluginsAction(String preAction, String action, Consumer<ProtocolPlugin> callback) {
+        log(preAction + " a total of " + plugins.size() + " plugins...");
         plugins.forEach((plugin) -> {
-            log("Loading " + plugin.getName() + "...");
-            plugin.onLoad();
-            log("Loaded " + plugin.getName() + ".");
+            log(preAction + " " + plugin.getName() + "...");
+            callback.accept(plugin);
+            log(action + " " + plugin.getName() + ".");
         });
-        log("Loaded a total of " + plugins.size() + " plugins.");
+        log(action + " a total of " + plugins.size() + " plugins.");
     }
 
     public void onEnable() {
-        log("Enabling a total of " + plugins.size() + " plugins...");
-        plugins.forEach((plugin) -> {
-            log("Enabling " + plugin.getName() + "...");
-            plugin.onEnable();
-            log("Enabled " + plugin.getName() + ".");
-        });
-        log("Enabled a total of " + plugins.size() + " plugins.");
+        pluginsAction("Enabling", "Enabled", ProtocolPlugin::onEnable);
     }
 
     public void registerEvent(Listener listener) {
