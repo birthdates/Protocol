@@ -23,27 +23,36 @@ public class Protocol extends JavaPlugin {
     public void onLoad() {
         instance = this;
         saveDefaultConfig();
+        registerPlugins();
+        loadPlugins();
+    }
+
+    private void registerPlugins() {
         Reflections reflections = new Reflections();
         List<String> blacklistedPlugins = getConfig().getStringList("blacklisted-plugins");
+
         for (Class<?> aClass : reflections.getTypesAnnotatedWith(UsePlugin.class)) {
-            if (!ProtocolPlugin.class.isAssignableFrom(aClass)) {
+            if (!ProtocolPlugin.class.isAssignableFrom(aClass)) { //somehow if class is not a protocol plugin but uses the annotation
                 continue;
             }
             UsePlugin usePlugin = aClass.getAnnotation(UsePlugin.class);
             String name = usePlugin.name();
-            if(blacklistedPlugins.contains(name)) {
-                log("Skipping " + name + ".");
+            if (blacklistedPlugins.contains(name)) {
+                log("Skipping " + name + "."); //blacklisted plugin
                 continue;
             }
             try {
-                ProtocolPlugin plugin = (ProtocolPlugin) aClass.newInstance();
+                ProtocolPlugin plugin = (ProtocolPlugin) aClass.newInstance(); //create new instance of this plugin (init later)
                 plugins.add(plugin);
                 plugin.setWeight(usePlugin.weight());
                 plugin.setName(name);
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+            } catch (InstantiationException | IllegalAccessException exception) {
+                exception.printStackTrace();
             }
         }
+    }
+
+    private void loadPlugins() {
         log("Loading a total of " + plugins.size() + " plugins...");
         plugins.sort(Comparator.comparingDouble(ProtocolPlugin::getWeight));
         plugins.forEach((plugin) -> {
