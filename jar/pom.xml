@@ -5,12 +5,11 @@
     <parent>
         <artifactId>protocol-parent</artifactId>
         <groupId>com.birthdates</groupId>
-        <version>1.0.0</version>
+        <version>1.0.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>protocol-jar</artifactId>
-    <version>1.0.4</version>
 
     <distributionManagement>
         <repository>
@@ -100,7 +99,7 @@
         <dependency>
             <artifactId>protocol</artifactId>
             <groupId>com.birthdates</groupId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
