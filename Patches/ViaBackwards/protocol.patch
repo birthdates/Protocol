@@ -18,7 +18,7 @@ index 90ac4d8..fbc3130 100644
          <dependency>
              <groupId>nl.matsv</groupId>
 diff --git a/bukkit/pom.xml b/bukkit/pom.xml
-index 72095d9..c272976 100644
+index 72095d9..e145533 100644
 --- a/bukkit/pom.xml
 +++ b/bukkit/pom.xml
 @@ -29,6 +29,12 @@
@@ -28,7 +28,7 @@ index 72095d9..c272976 100644
 +        <dependency>
 +            <artifactId>protocol</artifactId>
 +            <groupId>com.birthdates</groupId>
-+            <version>1.0.4</version>
++            <version>1.0.5</version>
 +            <scope>provided</scope>
 +        </dependency>
          <dependency>
