@@ -1,4 +1,4 @@
-# Protocol
+# Protocol ![Release Workflow](https://github.com/birthdates/Protocol/actions/workflows/maven.yml/badge.svg)
 Most of the Spigot protocol plugins in one! (ViaVersions, ProtocolLib, HolographicDisplays, e.t.c)
 
 # Downside
