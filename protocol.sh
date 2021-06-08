@@ -4,7 +4,23 @@ function loop {
 
 	for plugin in ${plugins[@]}; do
 		cd $plugin
+		projectDir=../$plugin
+
+		#if we have uncomitted changes, most likely already patched
+		if [ -n "$(git status --porcelain)" ]
+		then
+			echo "Uncomitted changes detected for $plugin (skipping)"
+			cd ..
+			continue
+		fi
+
 		pluginDir=../Patches/$plugin
+
+		# if the project is not initialized
+		if [ ! -d "$projectDir/.git" ]
+		then
+			git submodule update --init --recursive
+		fi
 
 		patchFile=$pluginDir/protocol.patch
 
@@ -27,7 +43,6 @@ function loop {
 case $1 in 
 
 	"patch")
-		git submodule update --init --recursive
 		loop 0
 		;;
 	"create")
